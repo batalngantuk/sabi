@@ -6,8 +6,11 @@ import { useAppStore } from '../store/useAppStore';
 import { useIdentityStore } from '../store/useIdentityStore';
 import { motion, AnimatePresence } from 'framer-motion';
 import { useState } from 'react';
-import { ArrowLeft, Camera, Send } from 'lucide-react';
+import { ArrowLeft, Camera, Send, Loader2 } from 'lucide-react';
 import { Suggestion } from '../types';
+import toast from 'react-hot-toast';
+import confetti from 'canvas-confetti';
+import { triggerHaptic } from '../lib/haptics';
 
 export default function SparkGenerator() {
     const { form, setForm, suggestions, setSuggestions, isLoading, setIsLoading } = useSparkStore();
@@ -28,6 +31,8 @@ export default function SparkGenerator() {
     const handlePost = () => {
         if (!selectedIdea) return;
 
+        triggerHaptic('medium');
+
         // 1. Add to Vault (Public Feed)
         addAct({
             id: Date.now().toString(),
@@ -47,6 +52,16 @@ export default function SparkGenerator() {
             action: selectedIdea.title,
             time: 'Baru saja',
             points: '+50'
+        });
+
+        // 3. Celebrate!
+        confetti({
+            particleCount: 100,
+            spread: 70,
+            origin: { y: 0.6 }
+        });
+        toast.success('Mantap! Kebaikanmu berhasil dibagikan (+50 Poin)', {
+            icon: '🎉',
         });
 
         // 3. Reset and navigate
@@ -74,7 +89,7 @@ export default function SparkGenerator() {
             setSuggestions(data);
         } catch (error) {
             console.error(error);
-            alert("Maaf, lagi ga bisa racik ide nih. Coba lagi nanti ya!");
+            toast.error("Maaf, lagi ga bisa racik ide nih. Coba lagi nanti ya!");
         } finally {
             setIsLoading(false);
         }
@@ -113,7 +128,7 @@ export default function SparkGenerator() {
                                                     });
                                                 },
                                                 (err) => {
-                                                    alert("Gagal ambil lokasi: " + err.message);
+                                                    toast.error("Gagal ambil lokasi: " + err.message);
                                                 }
                                             );
                                         } else {
@@ -226,8 +241,9 @@ export default function SparkGenerator() {
                             <button
                                 onClick={handleGenerate}
                                 disabled={isLoading}
-                                className="w-full gradient-primary text-white py-4 rounded-2xl font-bold text-lg shadow-lg hover:shadow-xl transform hover:scale-[1.02] transition-all duration-300 disabled:opacity-70 disabled:cursor-not-allowed"
+                                className="w-full gradient-primary text-white py-4 rounded-2xl font-bold text-lg shadow-lg hover:shadow-xl transform hover:scale-[1.02] transition-all duration-300 disabled:opacity-70 disabled:cursor-not-allowed flex items-center justify-center gap-2"
                             >
+                                {isLoading && <Loader2 className="w-5 h-5 animate-spin" />}
                                 {isLoading ? 'Bentar, meracik ide...' : 'Carikan Ide Seru!'}
                             </button>
                         </div>

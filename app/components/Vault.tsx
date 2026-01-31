@@ -1,13 +1,28 @@
 import { useVaultStore } from '../store/useVaultStore';
 import { useIdentityStore } from '../store/useIdentityStore';
-import { Heart, MessageCircle, Share2, MoreHorizontal, Send, Image as ImageIcon } from 'lucide-react';
+import { Heart, MessageCircle, Share2, MoreHorizontal, Send, Image as ImageIcon, RefreshCw } from 'lucide-react';
 import { useState } from 'react';
+import toast from 'react-hot-toast';
+import confetti from 'canvas-confetti';
+import { usePullToRefresh } from '../hooks/usePullToRefresh';
+import { triggerHaptic } from '../lib/haptics';
 
 export default function Vault() {
     const { completedActs, addAct } = useVaultStore();
     const { addPoints, addActivity } = useIdentityStore();
     const [status, setStatus] = useState('');
     const [image, setImage] = useState<string | null>(null);
+
+    const handleRefresh = async () => {
+        // Simulate refresh (in future: fetch from API)
+        await new Promise(resolve => setTimeout(resolve, 1000));
+        toast.success('Feed diperbarui!');
+    };
+
+    const { handleTouchStart, handleTouchMove, handleTouchEnd, isRefreshing, pullDistance, progress } = usePullToRefresh({
+        onRefresh: handleRefresh,
+        threshold: 80
+    });
 
     const handleImageUpload = (e: React.ChangeEvent<HTMLInputElement>) => {
         const file = e.target.files?.[0];
@@ -19,6 +34,7 @@ export default function Vault() {
     };
 
     const handleShare = async (act: any) => {
+        triggerHaptic('light');
         const shareData = {
             title: `Kebaikan: ${act.title}`,
             text: `${act.title}\n\n"${act.story}"\n\n- ${act.user}`,
@@ -30,7 +46,7 @@ export default function Vault() {
                 await navigator.share(shareData);
             } else {
                 await navigator.clipboard.writeText(`${shareData.text}\n${shareData.url}`);
-                alert('Cerita tersalin! Siap dipaste kemana aja.');
+                toast.success('Cerita tersalin! Siap dipaste kemana aja.');
             }
         } catch (error) {
             console.error('Error sharing:', error);
@@ -39,6 +55,8 @@ export default function Vault() {
 
     const handlePost = () => {
         if (!status.trim()) return;
+
+        triggerHaptic('medium');
 
         // 1. Add to Vault
         addAct({
@@ -64,11 +82,42 @@ export default function Vault() {
         // 3. Reset
         setStatus('');
         setImage(null);
-        alert('Mantap! Kebaikanmu berhasil dibagikan (+50 Poin)');
+
+        // 4. Celebrate!
+        confetti({
+            particleCount: 100,
+            spread: 70,
+            origin: { y: 0.6 }
+        });
+        toast.success('Mantap! Kebaikanmu berhasil dibagikan (+50 Poin)', {
+            icon: '🎉',
+        });
     };
 
     return (
-        <section className="max-w-4xl mx-auto px-6 pb-20">
+        <section
+            className="max-w-4xl mx-auto px-6 pb-20"
+            onTouchStart={handleTouchStart}
+            onTouchMove={handleTouchMove}
+            onTouchEnd={handleTouchEnd}
+        >
+            {/* Pull to Refresh Indicator */}
+            {pullDistance > 0 && (
+                <div
+                    className="flex justify-center items-center py-4 transition-all duration-300"
+                    style={{
+                        opacity: progress,
+                        transform: `translateY(${Math.min(pullDistance, 60)}px)`
+                    }}
+                >
+                    <RefreshCw
+                        className={`w-6 h-6 text-[var(--primary-orange)] transition-transform ${isRefreshing ? 'animate-spin' : ''
+                            }`}
+                        style={{ transform: `rotate(${progress * 360}deg)` }}
+                    />
+                </div>
+            )}
+
             <div className="glass-effect rounded-3xl p-8">
                 <h2 className="text-xl md:text-3xl font-bold mb-6 text-[var(--text-primary)]">
                     Galeri Kebaikan
@@ -128,56 +177,71 @@ export default function Vault() {
                     </div>
                 </div>
 
-                <div className="space-y-6">
-                    {completedActs.map((act) => (
-                        <div key={act.id} className="glass-effect rounded-2xl p-6 hover:shadow-xl transition-all duration-300">
-                            <div className="flex justify-between items-start mb-4">
-                                <div>
-                                    <h3 className="font-bold text-lg text-[var(--text-primary)]">{act.title}</h3>
-                                    <p className="text-xs text-[var(--text-tertiary)]">{act.timestamp} • {act.user || 'Anonymous'}</p>
-                                </div>
-                                <div className="p-2 rounded-full hover:bg-gray-100 cursor-pointer">
-                                    <MoreHorizontal className="w-5 h-5 text-gray-400" />
-                                </div>
-                            </div>
-
-                            <p className="text-[var(--text-secondary)] mb-4 text-sm leading-relaxed whitespace-pre-line">
-                                {act.story}
-                            </p>
-
-                            {act.image ? (
-                                <div className="mb-4 rounded-xl overflow-hidden max-h-96 w-full bg-gray-100">
-                                    <img src={act.image} alt="Bukti Kebaikan" className="w-full h-full object-cover" />
-                                </div>
-                            ) : null}
-
-                            <div className="flex items-center gap-2 mb-4">
-                                <span className="px-3 py-1 rounded-full bg-[var(--bg-orange-50)] text-[var(--primary-orange)] text-xs font-bold">
-                                    {act.category}
-                                </span>
-                            </div>
-
-                            <div className="flex items-center gap-6 border-t border-gray-100 pt-4 mb-4">
-                                <button className="flex items-center gap-2 text-[var(--text-secondary)] hover:text-pink-500 transition-colors">
-                                    <Heart className="w-5 h-5" />
-                                    <span className="text-xs font-bold">{act.likes}</span>
-                                </button>
-                                <button className="flex items-center gap-2 text-[var(--text-secondary)] hover:text-blue-500 transition-colors">
-                                    <MessageCircle className="w-5 h-5" />
-                                    <span className="text-xs font-bold">{act.comments}</span>
-                                </button>
-                            </div>
-
-                            <button
-                                onClick={() => handleShare(act)}
-                                className="w-full py-3 rounded-xl bg-[var(--primary-orange)] text-white font-bold shadow-md hover:shadow-lg hover:bg-orange-600 transition-all duration-300 flex items-center justify-center gap-2"
-                            >
-                                <Share2 className="w-5 h-5" />
-                                Bagikan Kebaikan Ini
-                            </button>
+                {/* Feed */}
+                {completedActs.length === 0 ? (
+                    <div className="text-center py-16">
+                        <div className="mb-4 flex justify-center">
+                            <Heart className="w-16 h-16 text-[var(--primary-orange)] opacity-30" />
                         </div>
-                    ))}
-                </div>
+                        <h3 className="text-xl font-bold text-[var(--text-primary)] mb-2">
+                            Belum Ada Cerita Kebaikan
+                        </h3>
+                        <p className="text-[var(--text-secondary)] mb-6">
+                            Yuk mulai berbagi kebaikan pertamamu! Tulis di atas atau cari ide di tab Ide.
+                        </p>
+                    </div>
+                ) : (
+                    <div className="space-y-6">
+                        {completedActs.map((act) => (
+                            <div key={act.id} className="glass-effect rounded-2xl p-6 hover:shadow-xl transition-all duration-300">
+                                <div className="flex justify-between items-start mb-4">
+                                    <div>
+                                        <h3 className="font-bold text-lg text-[var(--text-primary)]">{act.title}</h3>
+                                        <p className="text-xs text-[var(--text-tertiary)]">{act.timestamp} • {act.user || 'Anonymous'}</p>
+                                    </div>
+                                    <div className="p-2 rounded-full hover:bg-gray-100 cursor-pointer">
+                                        <MoreHorizontal className="w-5 h-5 text-gray-400" />
+                                    </div>
+                                </div>
+
+                                <p className="text-[var(--text-secondary)] mb-4 text-sm leading-relaxed whitespace-pre-line">
+                                    {act.story}
+                                </p>
+
+                                {act.image ? (
+                                    <div className="mb-4 rounded-xl overflow-hidden max-h-96 w-full bg-gray-100">
+                                        <img src={act.image} alt="Bukti Kebaikan" className="w-full h-full object-cover" />
+                                    </div>
+                                ) : null}
+
+                                <div className="flex items-center gap-2 mb-4">
+                                    <span className="px-3 py-1 rounded-full bg-[var(--bg-orange-50)] text-[var(--primary-orange)] text-xs font-bold">
+                                        {act.category}
+                                    </span>
+                                </div>
+
+                                <div className="flex items-center gap-6 border-t border-gray-100 pt-4 mb-4">
+                                    <button className="flex items-center gap-2 text-[var(--text-secondary)] hover:text-pink-500 transition-colors">
+                                        <Heart className="w-5 h-5" />
+                                        <span className="text-xs font-bold">{act.likes}</span>
+                                    </button>
+                                    <button className="flex items-center gap-2 text-[var(--text-secondary)] hover:text-blue-500 transition-colors">
+                                        <MessageCircle className="w-5 h-5" />
+                                        <span className="text-xs font-bold">{act.comments}</span>
+                                    </button>
+                                </div>
+
+                                <button
+                                    onClick={() => handleShare(act)}
+                                    className="w-full py-3 rounded-xl bg-[var(--primary-orange)] text-white font-bold shadow-md hover:shadow-lg hover:bg-orange-600 transition-all duration-300 flex items-center justify-center gap-2"
+                                >
+                                    <Share2 className="w-5 h-5" />
+                                    Bagikan Kebaikan Ini
+                                </button>
+                            </div>
+                        ))}
+                    </div>
+                )}
             </div>
         </section>
     );

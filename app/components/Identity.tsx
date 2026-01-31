@@ -4,11 +4,24 @@ import { useIdentityStore } from '../store/useIdentityStore';
 import {
     Flame, Star, Award, History,
     Sun, PawPrint, Shield, Leaf, Moon,
-    Gift, Utensils, Trash2
+    Gift, Utensils, Trash2, RefreshCw
 } from 'lucide-react';
+import toast from 'react-hot-toast';
+import { usePullToRefresh } from '../hooks/usePullToRefresh';
 
 export default function Identity() {
     const { points, streak, lifetimeScore, badges, activities } = useIdentityStore();
+
+    const handleRefresh = async () => {
+        // Simulate refresh (in future: sync with backend)
+        await new Promise(resolve => setTimeout(resolve, 1000));
+        toast.success('Data diperbarui!');
+    };
+
+    const { handleTouchStart, handleTouchMove, handleTouchEnd, isRefreshing, pullDistance, progress } = usePullToRefresh({
+        onRefresh: handleRefresh,
+        threshold: 80
+    });
 
     const getBadgeIcon = (name: string) => {
         switch (name) {
@@ -31,7 +44,28 @@ export default function Identity() {
     };
 
     return (
-        <section className="max-w-4xl mx-auto px-6 pb-20">
+        <section
+            className="max-w-4xl mx-auto px-6 pb-20"
+            onTouchStart={handleTouchStart}
+            onTouchMove={handleTouchMove}
+            onTouchEnd={handleTouchEnd}
+        >
+            {/* Pull to Refresh Indicator */}
+            {pullDistance > 0 && (
+                <div
+                    className="flex justify-center items-center py-4 transition-all duration-300"
+                    style={{
+                        opacity: progress,
+                        transform: `translateY(${Math.min(pullDistance, 60)}px)`
+                    }}
+                >
+                    <RefreshCw
+                        className={`w-6 h-6 text-[var(--primary-orange)] transition-transform ${isRefreshing ? 'animate-spin' : ''
+                            }`}
+                        style={{ transform: `rotate(${progress * 360}deg)` }}
+                    />
+                </div>
+            )}
             {/* Wallet / Points Balance - Prominent at Top */}
             <div className="glass-effect rounded-3xl p-6 mb-6 flex items-center justify-between bg-gradient-to-r from-[var(--bg-orange-50)] to-white border border-[var(--primary-orange)]">
                 <div>
