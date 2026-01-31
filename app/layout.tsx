@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import { Geist, Geist_Mono } from "next/font/google";
 import { Toaster } from 'react-hot-toast';
+import ServiceWorkerRegistration from './components/ServiceWorkerRegistration';
 import "./globals.css";
 
 const geistSans = Geist({
@@ -16,6 +17,18 @@ const geistMono = Geist_Mono({
 export const metadata: Metadata = {
   title: "sabi - Niat Baik, Gas Aksi!",
   description: "AI-powered suggestions, gamifikasi, dan social proof untuk membantu kamu berbuat kebaikan setiap hari",
+  manifest: '/manifest.json',
+  themeColor: '#F97316',
+  appleWebApp: {
+    capable: true,
+    statusBarStyle: 'default',
+    title: 'Sabi',
+  },
+  viewport: {
+    width: 'device-width',
+    initialScale: 1,
+    maximumScale: 1,
+  },
 };
 
 export default function RootLayout({
@@ -25,6 +38,11 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="id">
+      <head>
+        <link rel="manifest" href="/manifest.json" />
+        <meta name="theme-color" content="#F97316" />
+        <link rel="apple-touch-icon" href="/icon-192.png" />
+      </head>
       <body
         className={`${geistSans.variable} ${geistMono.variable} antialiased`}
       >
@@ -47,6 +65,7 @@ export default function RootLayout({
             },
           }}
         />
+        <ServiceWorkerRegistration />
         {children}
       </body>
     </html>
