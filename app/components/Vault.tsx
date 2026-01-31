@@ -68,16 +68,16 @@ export default function Vault() {
     };
 
     return (
-        <section className="max-w-4xl mx-auto px-6 pb-20">
+        <section className="max-w-4xl mx-auto px-4 md:px-6 pb-20">
             <div className="glass-effect rounded-3xl p-8">
                 <h2 className="text-xl md:text-3xl font-bold mb-6 text-[var(--text-primary)]">
                     Galeri Kebaikan
                 </h2>
 
                 {/* Status Input - Facebook Style */}
-                <div className="bg-white/50 rounded-2xl p-4 mb-8 border border-white shadow-sm">
+                <div className="bg-white/50 rounded-2xl p-3 md:p-4 mb-8 border border-white shadow-sm">
                     <div className="flex gap-4">
-                        <div className="w-10 h-10 rounded-full bg-[var(--primary-orange)] flex items-center justify-center text-white font-bold text-lg">
+                        <div className="hidden md:flex w-10 h-10 rounded-full bg-[var(--primary-orange)] items-center justify-center text-white font-bold text-lg">
                             Y
                         </div>
                         <div className="flex-1">
@@ -85,7 +85,7 @@ export default function Vault() {
                                 value={status}
                                 onChange={(e) => setStatus(e.target.value)}
                                 placeholder="Apa kebaikan yang kamu lakukan hari ini?"
-                                className="w-full bg-transparent border-none focus:ring-0 text-[var(--text-primary)] placeholder:text-[var(--text-tertiary)] resize-none h-20 mb-2"
+                                className="w-full bg-transparent border-none focus:ring-0 focus:outline-none text-[var(--text-primary)] placeholder:text-[var(--text-tertiary)] resize-none h-20 mb-2"
                             />
                             {image && (
                                 <div className="relative inline-block mb-2">
