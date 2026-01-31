@@ -21,11 +21,13 @@ export const useIdentityStore = create<IdentityState>()(
             lifetimeScore: 750, // Total accumulated score
             streak: 12,
             badges: [
-                { name: 'Morning Angel', unlocked: true },
-                { name: 'Animal Savior', unlocked: true },
-                { name: 'Street Hero', unlocked: false },
-                { name: 'Green Warrior', unlocked: true },
-                { name: 'Midnight Kindness', unlocked: false },
+                { name: 'Pejuang Subuh', unlocked: true },
+                { name: 'Sobat Anabul', unlocked: true },
+                { name: 'Warga Teladan', unlocked: false },
+                { name: 'Pahlawan Lingkungan', unlocked: true },
+                { name: 'Malaikat Malam', unlocked: false },
+                { name: 'Tangan Diatas', unlocked: true },
+                { name: 'Influencer Kebaikan', unlocked: false },
             ],
             activities: [
                 { action: 'Memberi roti ke petugas parkir', time: '2 jam lalu', points: '+50' },

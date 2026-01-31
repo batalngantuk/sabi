@@ -12,11 +12,13 @@ export default function Identity() {
 
     const getBadgeIcon = (name: string) => {
         switch (name) {
-            case 'Morning Angel': return <Sun className="w-8 h-8" />;
-            case 'Animal Savior': return <PawPrint className="w-8 h-8" />;
-            case 'Street Hero': return <Shield className="w-8 h-8" />;
-            case 'Green Warrior': return <Leaf className="w-8 h-8" />;
-            case 'Midnight Kindness': return <Moon className="w-8 h-8" />;
+            case 'Pejuang Subuh': return <Sun className="w-8 h-8" />;
+            case 'Sobat Anabul': return <PawPrint className="w-8 h-8" />;
+            case 'Warga Teladan': return <Shield className="w-8 h-8" />;
+            case 'Pahlawan Lingkungan': return <Leaf className="w-8 h-8" />;
+            case 'Malaikat Malam': return <Moon className="w-8 h-8" />;
+            case 'Tangan Diatas': return <Gift className="w-8 h-8" />;
+            case 'Influencer Kebaikan': return <Star className="w-8 h-8" />;
             default: return <Award className="w-8 h-8" />;
         }
     };
