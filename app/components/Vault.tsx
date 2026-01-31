@@ -6,6 +6,7 @@ import toast from 'react-hot-toast';
 import confetti from 'canvas-confetti';
 import { usePullToRefresh } from '../hooks/usePullToRefresh';
 import { triggerHaptic } from '../lib/haptics';
+import { compressImage } from '../lib/imageCompression';
 
 export default function Vault() {
     const { completedActs, addAct } = useVaultStore();
@@ -24,12 +25,16 @@ export default function Vault() {
         threshold: 80
     });
 
-    const handleImageUpload = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const handleImageUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
         const file = e.target.files?.[0];
         if (file) {
-            const reader = new FileReader();
-            reader.onloadend = () => setImage(reader.result as string);
-            reader.readAsDataURL(file);
+            try {
+                const compressedImage = await compressImage(file);
+                setImage(compressedImage);
+                toast.success('Gambar berhasil diupload!');
+            } catch (error) {
+                toast.error('Gagal upload gambar');
+            }
         }
     };
 

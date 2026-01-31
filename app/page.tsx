@@ -1,10 +1,13 @@
 'use client';
 
-import SparkGenerator from './components/SparkGenerator';
-import Vault from './components/Vault';
-import Identity from './components/Identity';
-import { Zap, Camera, User } from 'lucide-react';
+import { lazy, Suspense } from 'react';
+import { Zap, Camera, User, Loader2 } from 'lucide-react';
 import { useAppStore } from './store/useAppStore';
+
+// Lazy load components for code splitting
+const SparkGenerator = lazy(() => import('./components/SparkGenerator'));
+const Vault = lazy(() => import('./components/Vault'));
+const Identity = lazy(() => import('./components/Identity'));
 
 export default function Home() {
   const { activeSection, setActiveSection } = useAppStore();
@@ -32,9 +35,15 @@ export default function Home() {
 
       {/* Main Content Area */}
       <main className="pb-24">
-        {activeSection === 'spark' && <SparkGenerator />}
-        {activeSection === 'vault' && <Vault />}
-        {activeSection === 'identity' && <Identity />}
+        <Suspense fallback={
+          <div className="flex justify-center items-center py-20">
+            <Loader2 className="w-8 h-8 text-[var(--primary-orange)] animate-spin" />
+          </div>
+        }>
+          {activeSection === 'spark' && <SparkGenerator />}
+          {activeSection === 'vault' && <Vault />}
+          {activeSection === 'identity' && <Identity />}
+        </Suspense>
       </main>
 
       {/* Bottom Navigation */}

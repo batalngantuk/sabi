@@ -1,5 +1,6 @@
 'use client';
 
+import { memo } from 'react';
 import { useIdentityStore } from '../store/useIdentityStore';
 import {
     Flame, Star, Award, History,
@@ -9,7 +10,7 @@ import {
 import toast from 'react-hot-toast';
 import { usePullToRefresh } from '../hooks/usePullToRefresh';
 
-export default function Identity() {
+function Identity() {
     const { points, streak, lifetimeScore, badges, activities } = useIdentityStore();
 
     const handleRefresh = async () => {
@@ -246,3 +247,5 @@ export default function Identity() {
         </section>
     );
 }
+
+export default memo(Identity);

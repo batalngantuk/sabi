@@ -11,6 +11,7 @@ import { Suggestion } from '../types';
 import toast from 'react-hot-toast';
 import confetti from 'canvas-confetti';
 import { triggerHaptic } from '../lib/haptics';
+import { compressImage } from '../lib/imageCompression';
 
 export default function SparkGenerator() {
     const { form, setForm, suggestions, setSuggestions, isLoading, setIsLoading } = useSparkStore();
