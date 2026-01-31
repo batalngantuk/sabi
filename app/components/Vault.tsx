@@ -1,7 +1,7 @@
 import { useVaultStore } from '../store/useVaultStore';
 import { useIdentityStore } from '../store/useIdentityStore';
-import { Heart, MessageCircle, Share2, MoreHorizontal, Send, Image as ImageIcon, RefreshCw } from 'lucide-react';
-import { useState } from 'react';
+import { Heart, MessageCircle, Share2, MoreHorizontal, Send, Image as ImageIcon, RefreshCw, Trash2 } from 'lucide-react';
+import { useState, useRef, useEffect } from 'react';
 import toast from 'react-hot-toast';
 import confetti from 'canvas-confetti';
 import { usePullToRefresh } from '../hooks/usePullToRefresh';
@@ -9,10 +9,18 @@ import { triggerHaptic } from '../lib/haptics';
 import { compressImage } from '../lib/imageCompression';
 
 export default function Vault() {
-    const { completedActs, addAct } = useVaultStore();
+    const { completedActs, addAct, deleteAct } = useVaultStore();
     const { addPoints, addActivity } = useIdentityStore();
     const [status, setStatus] = useState('');
     const [image, setImage] = useState<string | null>(null);
+    const [activeMenuId, setActiveMenuId] = useState<string | null>(null);
+
+    // Close menu when clicking outside
+    useEffect(() => {
+        const handleClickOutside = () => setActiveMenuId(null);
+        window.addEventListener('click', handleClickOutside);
+        return () => window.removeEventListener('click', handleClickOutside);
+    }, []);
 
     const handleRefresh = async () => {
         // Simulate refresh (in future: fetch from API)
@@ -40,16 +48,33 @@ export default function Vault() {
 
     const handleShare = async (act: any) => {
         triggerHaptic('light');
-        const shareData = {
+
+        let shareData: any = {
             title: `Kebaikan: ${act.title}`,
             text: `${act.title}\n\n"${act.story}"\n\n- ${act.user}`,
             url: window.location.href
         };
 
+        // If there's an image, try to share it too
+        if (act.image && navigator.canShare && navigator.canShare({ files: [] })) {
+            try {
+                // Convert Base64 to Blob
+                const fetchRes = await fetch(act.image);
+                const blob = await fetchRes.blob();
+                const file = new File([blob], 'kebaikan.jpg', { type: 'image/jpeg' });
+
+                // Update share data with file
+                shareData.files = [file];
+            } catch (e) {
+                console.error('Error preparing image for share:', e);
+            }
+        }
+
         try {
-            if (navigator.share) {
+            if (navigator.share && navigator.canShare(shareData)) {
                 await navigator.share(shareData);
             } else {
+                // Fallback: copy text only
                 await navigator.clipboard.writeText(`${shareData.text}\n${shareData.url}`);
                 toast.success('Cerita tersalin! Siap dipaste kemana aja.');
             }
@@ -202,8 +227,36 @@ export default function Vault() {
                                         <h3 className="font-bold text-lg text-[var(--text-primary)]">{act.title}</h3>
                                         <p className="text-xs text-[var(--text-tertiary)]">{act.timestamp} • {act.user || 'Anonymous'}</p>
                                     </div>
-                                    <div className="p-2 rounded-full hover:bg-gray-100 cursor-pointer">
-                                        <MoreHorizontal className="w-5 h-5 text-gray-400" />
+                                    <div className="relative">
+                                        <div
+                                            className="p-2 rounded-full hover:bg-gray-100 cursor-pointer"
+                                            onClick={(e) => {
+                                                e.stopPropagation();
+                                                setActiveMenuId(activeMenuId === act.id ? null : act.id);
+                                            }}
+                                        >
+                                            <MoreHorizontal className="w-5 h-5 text-gray-400" />
+                                        </div>
+
+                                        {/* Dropdown Menu */}
+                                        {activeMenuId === act.id && (
+                                            <div className="absolute right-0 top-10 bg-white rounded-xl shadow-xl border border-gray-100 p-2 z-10 min-w-[150px] animate-in fade-in zoom-in-95 duration-200">
+                                                <button
+                                                    onClick={(e) => {
+                                                        e.stopPropagation();
+                                                        if (confirm('Yakin mau hapus cerita ini?')) {
+                                                            deleteAct(act.id);
+                                                            toast.success('Cerita berhasil dihapus');
+                                                            setActiveMenuId(null);
+                                                        }
+                                                    }}
+                                                    className="w-full flex items-center gap-2 p-3 text-red-500 hover:bg-red-50 rounded-lg transition-colors text-sm font-bold"
+                                                >
+                                                    <Trash2 className="w-4 h-4" />
+                                                    Hapus Post
+                                                </button>
+                                            </div>
+                                        )}
                                     </div>
                                 </div>
 
