@@ -13,7 +13,7 @@ const geistMono = Geist_Mono({
 });
 
 export const metadata: Metadata = {
-  title: "Pay It Forward - Ubah Niat Baik Menjadi Aksi Nyata",
+  title: "sabi - Niat Baik, Gas Aksi!",
   description: "AI-powered suggestions, gamifikasi, dan social proof untuk membantu kamu berbuat kebaikan setiap hari",
 };
 

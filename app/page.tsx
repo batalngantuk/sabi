@@ -17,8 +17,8 @@ export default function Home() {
           <div className="inline-block mb-6 animate-[float_3s_ease-in-out_infinite]">
             <span className="text-7xl">🤝</span>
           </div>
-          <h1 className="text-5xl md:text-6xl font-bold mb-6 text-gradient">
-            Pay It Forward
+          <h1 className="text-5xl md:text-6xl font-bold mb-6 text-gradient lowercase">
+            sabi.
           </h1>
           <p className="text-xl md:text-2xl mb-4 text-[var(--text-secondary)] max-w-2xl mx-auto">
             Niat baik jangan cuma di hati, gas aksi! 🚀

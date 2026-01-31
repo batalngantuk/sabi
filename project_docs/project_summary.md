@@ -1,7 +1,7 @@
-# Pay It Forward - Project Summary
+# sabi (formerly Pay It Forward) - Project Summary
 
 ## 📋 Executive Summary
-**Pay It Forward** is a web application designed to turn good intentions into concrete actions using AI suggestions, gamification, and social proof. It targets the "analysis paralysis" often faced by people who want to help but don't know how.
+**sabi** is a web application designed to turn good intentions into concrete actions using AI suggestions, gamification, and social proof. It targets the "analysis paralysis" often faced by people who want to help but don't know how.
 
 ## 🎨 Design Philosophy
 - **Aesthetic**: "Warm Organic Minimalism"
