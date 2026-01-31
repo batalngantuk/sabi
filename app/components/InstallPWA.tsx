@@ -11,17 +11,20 @@ export default function InstallPWA() {
 
     useEffect(() => {
         // Check if iOS
-        const iOS = /iPad|iPhone|iPod/.test(navigator.userAgent);
-        setIsIOS(iOS);
+        const isIOSDevice = /iPad|iPhone|iPod/.test(navigator.userAgent) && !(window as any).MSStream;
+        setIsIOS(isIOSDevice);
 
-        // Check if already installed
-        if (window.matchMedia('(display-mode: standalone)').matches) {
+        // Check if already installed (standalone mode)
+        const isStandalone = window.matchMedia('(display-mode: standalone)').matches ||
+            (window.navigator as any).standalone === true;
+
+        if (isStandalone) {
             setShowInstallButton(false);
             return;
         }
 
         // Android/Desktop - listen for install prompt
-        const handler = (e: Event) => {
+        const handler = (e: any) => {
             e.preventDefault();
             setDeferredPrompt(e);
             setShowInstallButton(true);
@@ -29,9 +32,13 @@ export default function InstallPWA() {
 
         window.addEventListener('beforeinstallprompt', handler);
 
-        // iOS - show if not installed
-        if (iOS && !(window.navigator as any).standalone) {
-            setShowInstallButton(true);
+        // iOS - show button if not installed and using Safari
+        if (isIOSDevice && !isStandalone) {
+            // Check if Safari (not Chrome or other browsers on iOS)
+            const isSafari = /Safari/.test(navigator.userAgent) && !/CriOS|FxiOS|OPiOS/.test(navigator.userAgent);
+            if (isSafari) {
+                setShowInstallButton(true);
+            }
         }
 
         return () => window.removeEventListener('beforeinstallprompt', handler);
@@ -41,12 +48,16 @@ export default function InstallPWA() {
         if (isIOS) {
             setShowIOSInstructions(true);
         } else if (deferredPrompt) {
-            deferredPrompt.prompt();
-            const { outcome } = await deferredPrompt.userChoice;
-            if (outcome === 'accepted') {
-                setShowInstallButton(false);
+            try {
+                deferredPrompt.prompt();
+                const { outcome } = await deferredPrompt.userChoice;
+                if (outcome === 'accepted') {
+                    setShowInstallButton(false);
+                }
+                setDeferredPrompt(null);
+            } catch (error) {
+                console.error('Install prompt error:', error);
             }
-            setDeferredPrompt(null);
         }
     };
 
