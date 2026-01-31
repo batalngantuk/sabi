@@ -131,17 +131,14 @@ export default function Vault() {
                 {/* Status Input - Facebook Style */}
                 <div className="bg-white/50 rounded-2xl p-4 mb-8 border border-white shadow-sm">
                     <div className="flex gap-4">
-                        <div className="w-10 h-10 rounded-full bg-[var(--primary-orange)] flex items-center justify-center text-white font-bold text-lg">
-                            Y
-                        </div>
                         <div className="flex-1">
                             <textarea
                                 value={status}
                                 onChange={(e) => setStatus(e.target.value)}
-                                placeholder="Apa kebaikan yang kamu lakukan hari ini?"
-                                className="w-full bg-transparent border-none focus:ring-0 text-[var(--text-primary)] placeholder:text-[var(--text-tertiary)] resize-none h-20 mb-2"
-                            />
-                            {image && (
+                                placeholder="Ceritain kebaikan yang udah kamu lakuin hari ini..."
+                                className="w-full bg-transparent border-none resize-none text-[var(--text-primary)] placeholder:text-[var(--text-tertiary)] focus:outline-none"
+                                rows={3}
+                            />{image && (
                                 <div className="relative inline-block mb-2">
                                     <img src={image} alt="Preview" className="h-24 rounded-lg border border-gray-200" />
                                     <button
