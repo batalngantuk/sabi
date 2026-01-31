@@ -283,6 +283,11 @@ export default function SparkGenerator() {
                                     </motion.div>
                                 ))}
                             </div>
+
+                            {/* Install PWA Prompt */}
+                        <div className="mt-6">
+                            <InstallPWA />
+                        </div>
                         )}
                     </motion.div>
                 ) : (
