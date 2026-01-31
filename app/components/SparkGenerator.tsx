@@ -139,11 +139,10 @@ export default function SparkGenerator() {
                                     }}
                                     className={`w-full flex items-center justify-between p-5 min-h-[70px] cursor-pointer touch-manipulation active:scale-[0.98] rounded-xl border-2 transition-all duration-300 ${form.useLocation
                                         ? 'bg-orange-50 border-[var(--primary-orange)] text-[var(--text-primary)] shadow-sm'
-                                        : 'bg-white border-gray-200 text-[var(--text-secondary)] hover:border-[var(--border-orange)]'
+                                        : 'bg-white border-gray-200 text-[var(--text-secondary)] hover:border-[var(--border-orange)] active:bg-gray-50'
                                         }`}
                                 >
                                     <div className="flex items-center gap-3">
-
                                         <div className="text-left">
                                             <p className="font-bold text-sm">
                                                 {form.useLocation ? 'Lokasi Kamu Aktif' : 'Pakai Lokasi Saya'}
@@ -153,9 +152,9 @@ export default function SparkGenerator() {
                                             </p>
                                         </div>
                                     </div>
-                                    <div className={`w-6 h-6 rounded-full border-2 flex items-center justify-center transition-all ${form.useLocation ? 'bg-[var(--primary-orange)] border-[var(--primary-orange)]' : 'border-gray-300'
+                                    <div className={`w-8 h-8 rounded-full border-2 flex items-center justify-center transition-all ${form.useLocation ? 'bg-[var(--primary-orange)] border-[var(--primary-orange)]' : 'border-gray-300'
                                         }`}>
-                                        {form.useLocation && <span className="text-white text-xs font-bold">✓</span>}
+                                        {form.useLocation && <span className="text-white font-bold text-sm">✓</span>}
                                     </div>
                                 </button>
 
