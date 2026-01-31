@@ -15,7 +15,7 @@ export default function Home() {
   return (
     <div className="min-h-screen">
       {/* Hero Section */}
-      <section className="relative overflow-hidden pt-12 pb-6 px-6">
+      <section className="relative overflow-hidden pt-12 pb-6 px-4 md:px-6">
         <div className="max-w-6xl mx-auto text-center">
           <div className="inline-block mb-3 animate-[float_3s_ease-in-out_infinite]">
             {/* <span className="text-5xl md:text-7xl">🤝</span> */}

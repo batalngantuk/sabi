@@ -98,7 +98,7 @@ export default function SparkGenerator() {
     };
 
     return (
-        <section className="max-w-4xl mx-auto px-6 pb-20">
+        <section className="max-w-4xl mx-auto px-4 md:px-6 pb-20">
             <AnimatePresence mode="wait">
                 {!selectedIdea ? (
                     <motion.div

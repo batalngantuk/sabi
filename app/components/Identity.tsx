@@ -47,7 +47,7 @@ function Identity() {
 
     return (
         <section
-            className="max-w-4xl mx-auto px-6 pb-20"
+            className="max-w-4xl mx-auto px-4 md:px-6 pb-20"
             onTouchStart={handleTouchStart}
             onTouchMove={handleTouchMove}
             onTouchEnd={handleTouchEnd}
