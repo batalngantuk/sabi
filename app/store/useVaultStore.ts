@@ -5,7 +5,9 @@ import { CompletedAct } from '../types';
 interface VaultState {
     completedActs: CompletedAct[];
     addAct: (act: CompletedAct) => void;
+    deleteAct: (id: string) => void;
 }
+
 
 export const useVaultStore = create<VaultState>()(
     persist(
@@ -33,6 +35,9 @@ export const useVaultStore = create<VaultState>()(
                 }
             ],
             addAct: (act) => set((state) => ({ completedActs: [act, ...state.completedActs] })),
+            deleteAct: (id) => set((state) => ({
+                completedActs: state.completedActs.filter((act) => act.id !== id)
+            })),
         }),
         {
             name: 'vault-storage',
