@@ -12,26 +12,17 @@ export default function Home() {
   return (
     <div className="min-h-screen">
       {/* Hero Section */}
-      <section className="relative overflow-hidden py-20 px-6">
+      <section className="relative overflow-hidden pt-12 pb-6 px-6">
         <div className="max-w-6xl mx-auto text-center">
-          <div className="inline-block mb-6 animate-[float_3s_ease-in-out_infinite]">
-            <span className="text-7xl">🤝</span>
+          <div className="inline-block mb-3 animate-[float_3s_ease-in-out_infinite]">
+            <span className="text-5xl md:text-7xl">🤝</span>
           </div>
-          <h1 className="text-5xl md:text-6xl font-bold mb-6 text-gradient lowercase">
+          <h1 className="text-4xl md:text-6xl font-bold mb-3 text-gradient lowercase">
             sabi.
           </h1>
-          <p className="text-xl md:text-2xl mb-4 text-[var(--text-secondary)] max-w-2xl mx-auto">
+          <p className="text-lg md:text-2xl mb-2 text-[var(--text-secondary)] max-w-2xl mx-auto">
             Niat baik jangan cuma di hati, gas aksi! 🚀
           </p>
-          <p className="text-lg mb-8 text-[var(--text-tertiary)] max-w-xl mx-auto">
-            Bingung mau baik apa hari ini? Kita bantuin cari ide plus bikin seru bareng-bareng!
-          </p>
-          <button
-            onClick={() => setActiveSection('spark')}
-            className="gradient-primary text-white px-8 py-4 rounded-full text-lg font-bold shadow-lg hover:shadow-xl transform hover:scale-105 transition-all duration-300"
-          >
-            Mulai Seru-seruan! ✨
-          </button>
         </div>
 
         {/* Decorative blobs */}

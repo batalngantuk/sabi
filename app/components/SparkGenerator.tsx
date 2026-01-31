@@ -56,56 +56,85 @@ export default function SparkGenerator() {
                     Lagi buntu ide? Santai, AI bakal pilihin yang pas buat sikon kamu.
                 </p>
 
-                <div className="grid md:grid-cols-3 gap-4 mb-6">
+                <div className="space-y-6 mb-6">
+                    {/* Budget Selection */}
                     <div>
                         <label className="block text-sm font-bold mb-2 text-[var(--text-primary)]">
                             💰 Ada modal berapa?
                         </label>
-                        <input
-                            type="range"
-                            min="0"
-                            max="100000"
-                            step="5000"
-                            value={form.budget}
-                            onChange={(e) => setForm({ budget: e.target.value })}
-                            className="w-full"
-                        />
-                        <p className="text-sm text-[var(--text-tertiary)] mt-1" suppressHydrationWarning>
-                            Rp {parseInt(form.budget).toLocaleString('id-ID')}
-                        </p>
+                        <div className="flex gap-3 overflow-x-auto pb-2 scrollbar-hide -mx-2 px-2">
+                            {[
+                                { label: '0', value: '0' },
+                                { label: '10k', value: '10000' },
+                                { label: '20k', value: '20000' },
+                                { label: '50k', value: '50000' },
+                                { label: '100k', value: '100000' },
+                                { label: 'Sultan', value: '200000' }
+                            ].map((opt) => (
+                                <button
+                                    key={opt.value}
+                                    onClick={() => setForm({ budget: opt.value })}
+                                    className={`flex-shrink-0 py-2 px-4 rounded-full text-sm font-bold transition-all duration-300 border ${form.budget === opt.value
+                                        ? 'bg-[var(--primary-orange)] border-[var(--primary-orange)] text-white shadow-md'
+                                        : 'bg-white border-gray-200 text-[var(--text-secondary)]'
+                                        }`}
+                                >
+                                    {opt.label}
+                                </button>
+                            ))}
+                        </div>
                     </div>
 
+                    {/* Time Selection */}
                     <div>
                         <label className="block text-sm font-bold mb-2 text-[var(--text-primary)]">
                             ⏱️ Punya waktu berapa lama?
                         </label>
-                        <input
-                            type="range"
-                            min="5"
-                            max="60"
-                            step="5"
-                            value={form.time}
-                            onChange={(e) => setForm({ time: e.target.value })}
-                            className="w-full"
-                        />
-                        <p className="text-sm text-[var(--text-tertiary)] mt-1">
-                            {form.time} menit
-                        </p>
+                        <div className="flex gap-3 overflow-x-auto pb-2 scrollbar-hide -mx-2 px-2">
+                            {[
+                                { label: '5m', value: '5' },
+                                { label: '15m', value: '15' },
+                                { label: '30m', value: '30' },
+                                { label: '1 Jam', value: '60' },
+                                { label: 'Seharian', value: '120' }
+                            ].map((opt) => (
+                                <button
+                                    key={opt.value}
+                                    onClick={() => setForm({ time: opt.value })}
+                                    className={`flex-shrink-0 py-2 px-4 rounded-full text-sm font-bold transition-all duration-300 border ${form.time === opt.value
+                                        ? 'bg-[var(--primary-orange)] border-[var(--primary-orange)] text-white shadow-md'
+                                        : 'bg-white border-gray-200 text-[var(--text-secondary)]'
+                                        }`}
+                                >
+                                    {opt.label}
+                                </button>
+                            ))}
+                        </div>
                     </div>
 
+                    {/* Energy Selection */}
                     <div>
                         <label className="block text-sm font-bold mb-2 text-[var(--text-primary)]">
                             ⚡ Lagi semangat ga?
                         </label>
-                        <select
-                            value={form.energy}
-                            onChange={(e) => setForm({ energy: e.target.value })}
-                            className="w-full px-4 py-2 rounded-xl border-2 border-[var(--border-orange)] bg-white text-[var(--text-primary)] font-medium"
-                        >
-                            <option value="low">Lagi lowbat 😴</option>
-                            <option value="medium">Biasa aja 😊</option>
-                            <option value="high">Gaspol! 🔥</option>
-                        </select>
+                        <div className="flex gap-3 overflow-x-auto pb-2 scrollbar-hide -mx-2 px-2">
+                            {[
+                                { label: 'Lelah 😴', value: 'low' },
+                                { label: 'Biasa Aja 😊', value: 'medium' },
+                                { label: 'Gaspol! 🔥', value: 'high' }
+                            ].map((opt) => (
+                                <button
+                                    key={opt.value}
+                                    onClick={() => setForm({ energy: opt.value })}
+                                    className={`flex-shrink-0 py-2 px-4 rounded-full text-sm font-bold transition-all duration-300 border ${form.energy === opt.value
+                                        ? 'bg-[var(--primary-orange)] border-[var(--primary-orange)] text-white shadow-md'
+                                        : 'bg-white border-gray-200 text-[var(--text-secondary)]'
+                                        }`}
+                                >
+                                    {opt.label}
+                                </button>
+                            ))}
+                        </div>
                     </div>
                 </div>
 
