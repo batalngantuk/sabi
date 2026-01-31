@@ -12,32 +12,21 @@ export default function InstallPWA() {
     useEffect(() => {
         // Detect iOS device
         const isIOSDevice = /iPad|iPhone|iPod/.test(navigator.userAgent) && !(window as any).MSStream;
-        console.log('Is iOS Device:', isIOSDevice);
-        console.log('User Agent:', navigator.userAgent);
         setIsIOS(isIOSDevice);
 
         // Check if already installed
         const isInstalled = window.matchMedia('(display-mode: standalone)').matches ||
             (window.navigator as any).standalone === true;
-        console.log('Is Installed:', isInstalled);
 
         if (isInstalled) {
-            console.log('App already installed, hiding button');
             return; // Don't show button if already installed
         }
 
         // For iOS - always show button if using Safari
         if (isIOSDevice) {
             const isSafari = /Safari/.test(navigator.userAgent) && !/CriOS|FxiOS|OPiOS|EdgiOS/.test(navigator.userAgent);
-            console.log('Is Safari:', isSafari);
-            console.log('User Agent contains Safari:', /Safari/.test(navigator.userAgent));
-            console.log('User Agent contains Chrome/Firefox/Opera/Edge:', /CriOS|FxiOS|OPiOS|EdgiOS/.test(navigator.userAgent));
-
             if (isSafari) {
-                console.log('Showing install button for iOS Safari');
                 setShowInstallButton(true);
-            } else {
-                console.log('Not Safari, button hidden');
             }
             return; // iOS doesn't support beforeinstallprompt
         }
@@ -45,7 +34,6 @@ export default function InstallPWA() {
         // For Android/Desktop - listen for install prompt
         const handleBeforeInstall = (e: any) => {
             e.preventDefault();
-            console.log('beforeinstallprompt fired');
             setDeferredPrompt(e);
             setShowInstallButton(true);
         };
@@ -66,14 +54,12 @@ export default function InstallPWA() {
 
         // Android/Desktop - trigger install prompt
         if (!deferredPrompt) {
-            console.log('No deferred prompt available');
             return;
         }
 
         try {
             await deferredPrompt.prompt();
             const { outcome } = await deferredPrompt.userChoice;
-            console.log(`User response: ${outcome}`);
 
             if (outcome === 'accepted') {
                 setShowInstallButton(false);
