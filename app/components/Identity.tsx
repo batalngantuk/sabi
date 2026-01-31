@@ -93,7 +93,7 @@ export default function Identity() {
                         <Flame className="w-5 h-5 text-[var(--primary-orange)]" />
                         Streak
                     </h3>
-                    <div className="mb-4 flex justify-center animate-[pulse-glow_2s_ease-in-out_infinite]">
+                    <div className="mb-4 flex justify-center">
                         <Flame className="w-20 h-20 text-[var(--primary-orange)] fill-[var(--primary-orange)]" />
                     </div>
                     <p className="text-5xl font-bold text-gradient mb-2">{streak}</p>
