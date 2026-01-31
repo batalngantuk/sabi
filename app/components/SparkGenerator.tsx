@@ -116,10 +116,17 @@ export default function SparkGenerator() {
                             </p>
 
                             <div className="space-y-6 mb-6">
+                                const [isLocating, setIsLocating] = useState(false);
+
+                                // ... existing code ...
+
+                                return (
+                                // ... existing jsx ...
                                 {/* Location Toggle - Big Button Style */}
                                 <button
                                     onClick={() => {
                                         if (!form.useLocation) {
+                                            setIsLocating(true);
                                             navigator.geolocation.getCurrentPosition(
                                                 (pos) => {
                                                     setForm({
@@ -128,9 +135,11 @@ export default function SparkGenerator() {
                                                         latitude: pos.coords.latitude,
                                                         longitude: pos.coords.longitude
                                                     });
+                                                    setIsLocating(false);
                                                 },
                                                 (err) => {
                                                     toast.error("Gagal ambil lokasi: " + err.message);
+                                                    setIsLocating(false);
                                                 }
                                             );
                                         } else {
@@ -145,16 +154,20 @@ export default function SparkGenerator() {
                                     <div className="flex items-center gap-3">
                                         <div className="text-left">
                                             <p className="font-bold text-sm">
-                                                {form.useLocation ? 'Lokasi Kamu Aktif' : 'Pakai Lokasi Saya'}
+                                                {isLocating ? 'Mencari Lokasi...' : (form.useLocation ? 'Lokasi Kamu Aktif' : 'Pakai Lokasi Saya')}
                                             </p>
                                             <p className="text-xs opacity-80">
-                                                {form.useLocation ? 'Mencari ide di sekitarmu...' : 'Klik biar ide lebih akurat!'}
+                                                {isLocating ? 'Tunggu sebentar ya...' : (form.useLocation ? 'Mencari ide di sekitarmu...' : 'Klik biar ide lebih akurat!')}
                                             </p>
                                         </div>
                                     </div>
-                                    <div className={`w-8 h-8 rounded-full border-2 flex items-center justify-center transition-all ${form.useLocation ? 'bg-[var(--primary-orange)] border-[var(--primary-orange)]' : 'border-gray-300'
+                                    <div className={`w-8 h-8 rounded-full border-2 flex items-center justify-center transition-all ${form.useLocation || isLocating ? 'bg-[var(--primary-orange)] border-[var(--primary-orange)]' : 'border-gray-300'
                                         }`}>
-                                        {form.useLocation && <span className="text-white font-bold text-sm">✓</span>}
+                                        {isLocating ? (
+                                            <Loader2 className="w-4 h-4 text-white animate-spin" />
+                                        ) : (
+                                            form.useLocation && <span className="text-white font-bold text-sm">✓</span>
+                                        )}
                                     </div>
                                 </button>
 
