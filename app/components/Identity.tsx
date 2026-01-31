@@ -145,12 +145,12 @@ export default function Identity() {
                         Tukar Poin Kebaikan
                     </h3>
                 </div>
-                <div className="grid grid-cols-2 gap-4">
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                     {[
-                        { id: '1', name: 'Pulsa 10k', cost: 500, type: 'pulsa' },
-                        { id: '2', name: 'Voucher Kopi', cost: 300, type: 'voucher' },
-                        { id: '3', name: 'Donasi Panti', cost: 1000, type: 'donation' },
-                        { id: '4', name: 'Pulsa 50k', cost: 2500, type: 'pulsa' },
+                        { id: '1', name: 'Nasi Jumat Berkah', cost: 750, type: 'donation' },
+                        { id: '2', name: 'Street Feeding Kucing', cost: 500, type: 'donation' },
+                        { id: '3', name: 'Donasi Panti Asuhan', cost: 1000, type: 'donation' },
+                        { id: '4', name: 'Tanam 1 Pohon', cost: 2000, type: 'donation' },
                     ].map((reward) => (
                         <div key={reward.id} className="bg-white/50 p-4 rounded-xl flex flex-col justify-between hover:shadow-md transition-all duration-300">
                             <div className="mb-2">
