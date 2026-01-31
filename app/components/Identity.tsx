@@ -112,7 +112,7 @@ export default function Identity() {
                     <Award className="w-6 h-6 text-[var(--primary-orange)]" />
                     Koleksi Badges
                 </h3>
-                <div className="grid grid-cols-5 gap-4">
+                <div className="grid grid-cols-3 md:grid-cols-5 gap-4">
                     {badges.map((badge, index) => (
                         <div
                             key={index}

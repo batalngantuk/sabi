@@ -117,7 +117,7 @@ export default function SparkGenerator() {
                                             setForm({ ...form, useLocation: false, latitude: null, longitude: null });
                                         }
                                     }}
-                                    className={`w-full flex items-center justify-between p-4 rounded-xl border-2 transition-all duration-300 ${form.useLocation
+                                    className={`w-full flex items-center justify-between p-5 min-h-[70px] cursor-pointer touch-manipulation active:scale-[0.98] rounded-xl border-2 transition-all duration-300 ${form.useLocation
                                         ? 'bg-orange-50 border-[var(--primary-orange)] text-[var(--text-primary)] shadow-sm'
                                         : 'bg-white border-gray-200 text-[var(--text-secondary)] hover:border-[var(--border-orange)]'
                                         }`}
