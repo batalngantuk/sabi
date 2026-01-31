@@ -1,14 +1,13 @@
 'use client';
 
-import { useState } from 'react';
 import SparkGenerator from './components/SparkGenerator';
 import Vault from './components/Vault';
 import Identity from './components/Identity';
 import { Zap, Camera, User } from 'lucide-react';
-import { Section } from './types';
+import { useAppStore } from './store/useAppStore';
 
 export default function Home() {
-  const [activeSection, setActiveSection] = useState<Section>('spark');
+  const { activeSection, setActiveSection } = useAppStore();
 
   return (
     <div className="min-h-screen">

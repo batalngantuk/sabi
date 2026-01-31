@@ -32,3 +32,22 @@ export interface Activity {
   time: string;
   points: string;
 }
+
+export interface CompletedAct {
+  id: string;
+  title: string;
+  story: string;
+  category: string;
+  timestamp: string;
+  likes: number;
+  comments: number;
+  image?: string;
+  user?: string;
+}
+
+export interface Reward {
+  id: string;
+  name: string;
+  cost: number;
+  type: 'pulsa' | 'voucher' | 'donation';
+}

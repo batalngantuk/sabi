@@ -1,6 +1,6 @@
 'use client';
 
-import { Badge, Activity } from '../types';
+import { useIdentityStore } from '../store/useIdentityStore';
 import {
     Flame, Star, Award, History,
     Sun, PawPrint, Shield, Leaf, Moon,
@@ -8,20 +8,7 @@ import {
 } from 'lucide-react';
 
 export default function Identity() {
-    // Mock badges
-    const badges: Badge[] = [
-        { name: 'Morning Angel', unlocked: true },
-        { name: 'Animal Savior', unlocked: true },
-        { name: 'Street Hero', unlocked: false },
-        { name: 'Green Warrior', unlocked: true },
-        { name: 'Midnight Kindness', unlocked: false },
-    ];
-
-    const activities: Activity[] = [
-        { action: 'Memberi roti ke petugas parkir', time: '2 jam lalu', points: '+50' },
-        { action: 'Memberi makan kucing jalanan', time: '1 hari lalu', points: '+30' },
-        { action: 'Memungut sampah di taman', time: '2 hari lalu', points: '+20' },
-    ];
+    const { points, streak, badges, activities } = useIdentityStore();
 
     const getBadgeIcon = (name: string) => {
         switch (name) {
@@ -67,7 +54,7 @@ export default function Identity() {
                                 stroke="url(#gradient)"
                                 strokeWidth="12"
                                 fill="none"
-                                strokeDasharray={`${(750 / 1000) * 440} 440`}
+                                strokeDasharray={`${(points / 1000) * 440} 440`}
                                 strokeLinecap="round"
                             />
                             <defs>
@@ -78,7 +65,7 @@ export default function Identity() {
                             </defs>
                         </svg>
                         <div className="absolute inset-0 flex items-center justify-center">
-                            <span className="text-4xl font-bold text-gradient">750</span>
+                            <span className="text-4xl font-bold text-gradient">{points}</span>
                         </div>
                     </div>
                     <p className="text-sm text-[var(--text-tertiary)]">
@@ -95,7 +82,7 @@ export default function Identity() {
                     <div className="mb-4 flex justify-center animate-[pulse-glow_2s_ease-in-out_infinite]">
                         <Flame className="w-20 h-20 text-[var(--primary-orange)] fill-[var(--primary-orange)]" />
                     </div>
-                    <p className="text-5xl font-bold text-gradient mb-2">12</p>
+                    <p className="text-5xl font-bold text-gradient mb-2">{streak}</p>
                     <p className="text-lg text-[var(--text-secondary)] font-bold">
                         Hari Non-stop!
                     </p>
@@ -131,8 +118,52 @@ export default function Identity() {
                 </div>
                 <div className="mt-6 text-center">
                     <p className="text-sm text-[var(--text-tertiary)]">
-                        Udah dapet 3 dari 5 badges kece! • Gas lengkapi semua!
+                        Udah dapet {badges.filter(b => b.unlocked).length} dari {badges.length} badges kece! • Gas lengkapi semua!
                     </p>
+                </div>
+            </div>
+
+            {/* Rewards Redemption */}
+            <div className="glass-effect rounded-3xl p-8 mt-6">
+                <h3 className="text-2xl font-bold mb-6 text-[var(--text-primary)] flex items-center gap-2">
+                    <Gift className="w-6 h-6 text-[var(--primary-orange)]" />
+                    Tukar Poin Kebaikan
+                </h3>
+                <div className="grid grid-cols-2 gap-4">
+                    {[
+                        { id: '1', name: 'Pulsa 10k', cost: 500, type: 'pulsa' },
+                        { id: '2', name: 'Voucher Kopi', cost: 300, type: 'voucher' },
+                        { id: '3', name: 'Donasi Panti', cost: 1000, type: 'donation' },
+                        { id: '4', name: 'Pulsa 50k', cost: 2500, type: 'pulsa' },
+                    ].map((reward) => (
+                        <div key={reward.id} className="bg-white/50 p-4 rounded-xl flex flex-col justify-between hover:shadow-md transition-all duration-300">
+                            <div className="mb-2">
+                                <h4 className="font-bold text-[var(--text-primary)]">{reward.name}</h4>
+                                <p className="text-xs text-[var(--text-tertiary)] uppercase tracking-wider">{reward.type}</p>
+                            </div>
+                            <div className="flex items-center justify-between mt-2">
+                                <span className="text-[var(--primary-orange)] font-bold">{reward.cost} Poin</span>
+                                <button
+                                    onClick={() => {
+                                        if (points >= reward.cost) {
+                                            const { redeemReward } = useIdentityStore.getState();
+                                            redeemReward(reward.cost);
+                                            alert(`Berhasil menukar ${reward.name}!`);
+                                        } else {
+                                            alert('Poin belum cukup, semangat nabung kebaikan lagi!');
+                                        }
+                                    }}
+                                    disabled={points < reward.cost}
+                                    className={`px-3 py-1 rounded-lg text-xs font-bold transition-colors ${points >= reward.cost
+                                        ? 'bg-[var(--primary-orange)] text-white hover:bg-orange-600'
+                                        : 'bg-gray-200 text-gray-400 cursor-not-allowed'
+                                        }`}
+                                >
+                                    Tukar
+                                </button>
+                            </div>
+                        </div>
+                    ))}
                 </div>
             </div>
 
