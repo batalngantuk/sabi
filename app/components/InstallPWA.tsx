@@ -10,54 +10,67 @@ export default function InstallPWA() {
     const [showIOSInstructions, setShowIOSInstructions] = useState(false);
 
     useEffect(() => {
-        // Check if iOS
+        // Detect iOS device
         const isIOSDevice = /iPad|iPhone|iPod/.test(navigator.userAgent) && !(window as any).MSStream;
         setIsIOS(isIOSDevice);
 
-        // Check if already installed (standalone mode)
-        const isStandalone = window.matchMedia('(display-mode: standalone)').matches ||
+        // Check if already installed
+        const isInstalled = window.matchMedia('(display-mode: standalone)').matches ||
             (window.navigator as any).standalone === true;
 
-        if (isStandalone) {
-            setShowInstallButton(false);
-            return;
+        if (isInstalled) {
+            return; // Don't show button if already installed
         }
 
-        // Android/Desktop - listen for install prompt
-        const handler = (e: any) => {
+        // For iOS - always show button if using Safari
+        if (isIOSDevice) {
+            const isSafari = /Safari/.test(navigator.userAgent) && !/CriOS|FxiOS|OPiOS|EdgiOS/.test(navigator.userAgent);
+            if (isSafari) {
+                setShowInstallButton(true);
+            }
+            return; // iOS doesn't support beforeinstallprompt
+        }
+
+        // For Android/Desktop - listen for install prompt
+        const handleBeforeInstall = (e: any) => {
             e.preventDefault();
+            console.log('beforeinstallprompt fired');
             setDeferredPrompt(e);
             setShowInstallButton(true);
         };
 
-        window.addEventListener('beforeinstallprompt', handler);
+        window.addEventListener('beforeinstallprompt', handleBeforeInstall);
 
-        // iOS - show button if not installed and using Safari
-        if (isIOSDevice && !isStandalone) {
-            // Check if Safari (not Chrome or other browsers on iOS)
-            const isSafari = /Safari/.test(navigator.userAgent) && !/CriOS|FxiOS|OPiOS/.test(navigator.userAgent);
-            if (isSafari) {
-                setShowInstallButton(true);
-            }
-        }
-
-        return () => window.removeEventListener('beforeinstallprompt', handler);
+        return () => {
+            window.removeEventListener('beforeinstallprompt', handleBeforeInstall);
+        };
     }, []);
 
     const handleInstallClick = async () => {
         if (isIOS) {
+            // iOS - show instructions modal
             setShowIOSInstructions(true);
-        } else if (deferredPrompt) {
-            try {
-                deferredPrompt.prompt();
-                const { outcome } = await deferredPrompt.userChoice;
-                if (outcome === 'accepted') {
-                    setShowInstallButton(false);
-                }
-                setDeferredPrompt(null);
-            } catch (error) {
-                console.error('Install prompt error:', error);
+            return;
+        }
+
+        // Android/Desktop - trigger install prompt
+        if (!deferredPrompt) {
+            console.log('No deferred prompt available');
+            return;
+        }
+
+        try {
+            await deferredPrompt.prompt();
+            const { outcome } = await deferredPrompt.userChoice;
+            console.log(`User response: ${outcome}`);
+
+            if (outcome === 'accepted') {
+                setShowInstallButton(false);
             }
+        } catch (error) {
+            console.error('Error showing install prompt:', error);
+        } finally {
+            setDeferredPrompt(null);
         }
     };
 
