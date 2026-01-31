@@ -92,8 +92,11 @@ export default function Vault() {
         }
 
         // Only add URL if NO file is shared (Android often fails when mixing text+url+file)
+        // If file exists, append URL to text instead
         if (!fileToShare) {
             shareData.url = window.location.href;
+        } else {
+            shareData.text = `${shareData.text}\n\n${window.location.href}`;
         }
 
         try {
