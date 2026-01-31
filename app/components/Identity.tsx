@@ -8,7 +8,7 @@ import {
 } from 'lucide-react';
 
 export default function Identity() {
-    const { points, streak, badges, activities } = useIdentityStore();
+    const { points, streak, lifetimeScore, badges, activities } = useIdentityStore();
 
     const getBadgeIcon = (name: string) => {
         switch (name) {
@@ -30,6 +30,20 @@ export default function Identity() {
 
     return (
         <section className="max-w-4xl mx-auto px-6 pb-20">
+            {/* Wallet / Points Balance - Prominent at Top */}
+            <div className="glass-effect rounded-3xl p-6 mb-6 flex items-center justify-between bg-gradient-to-r from-[var(--bg-orange-50)] to-white border border-[var(--primary-orange)]">
+                <div>
+                    <p className="text-sm text-[var(--text-tertiary)] font-bold uppercase mb-1">Dompet Kebaikan</p>
+                    <div className="flex items-baseline gap-2">
+                        <h2 className="text-4xl font-bold text-[var(--primary-orange)]">{points}</h2>
+                        <span className="text-[var(--text-secondary)] font-bold">Poin</span>
+                    </div>
+                </div>
+                <div className="p-3 bg-[var(--primary-orange)] rounded-full text-white shadow-lg shadow-orange-200">
+                    <Gift className="w-8 h-8" />
+                </div>
+            </div>
+
             <div className="grid md:grid-cols-2 gap-6 mb-6">
                 {/* Kindness Score */}
                 <div className="glass-effect rounded-3xl p-8 text-center">
@@ -54,7 +68,7 @@ export default function Identity() {
                                 stroke="url(#gradient)"
                                 strokeWidth="12"
                                 fill="none"
-                                strokeDasharray={`${(points / 1000) * 440} 440`}
+                                strokeDasharray={`${(lifetimeScore / 1000) * 440} 440`}
                                 strokeLinecap="round"
                             />
                             <defs>
@@ -65,7 +79,7 @@ export default function Identity() {
                             </defs>
                         </svg>
                         <div className="absolute inset-0 flex items-center justify-center">
-                            <span className="text-4xl font-bold text-gradient">{points}</span>
+                            <span className="text-4xl font-bold text-gradient">{lifetimeScore}</span>
                         </div>
                     </div>
                     <p className="text-sm text-[var(--text-tertiary)]">
@@ -125,10 +139,12 @@ export default function Identity() {
 
             {/* Rewards Redemption */}
             <div className="glass-effect rounded-3xl p-8 mt-6">
-                <h3 className="text-2xl font-bold mb-6 text-[var(--text-primary)] flex items-center gap-2">
-                    <Gift className="w-6 h-6 text-[var(--primary-orange)]" />
-                    Tukar Poin Kebaikan
-                </h3>
+                <div className="flex items-center justify-between mb-6">
+                    <h3 className="text-2xl font-bold text-[var(--text-primary)] flex items-center gap-2">
+                        <Gift className="w-6 h-6 text-[var(--primary-orange)]" />
+                        Tukar Poin Kebaikan
+                    </h3>
+                </div>
                 <div className="grid grid-cols-2 gap-4">
                     {[
                         { id: '1', name: 'Pulsa 10k', cost: 500, type: 'pulsa' },
