@@ -46,40 +46,79 @@ export default function Vault() {
         }
     };
 
+    // Helper to convert data URI to Blob
+    const dataURItoBlob = (dataURI: string) => {
+        try {
+            const byteString = atob(dataURI.split(',')[1]);
+            const mimeString = dataURI.split(',')[0].split(':')[1].split(';')[0];
+            const ab = new ArrayBuffer(byteString.length);
+            const ia = new Uint8Array(ab);
+            for (let i = 0; i < byteString.length; i++) {
+                ia[i] = byteString.charCodeAt(i);
+            }
+            return new Blob([ab], { type: mimeString });
+        } catch (e) {
+            console.error("Error converting data URI", e);
+            return null;
+        }
+    };
+
     const handleShare = async (act: any) => {
         triggerHaptic('light');
 
+        // Base content
         let shareData: any = {
             title: `Kebaikan: ${act.title}`,
             text: `${act.title}\n\n"${act.story}"\n\n- ${act.user}`,
-            url: window.location.href
         };
 
-        // If there's an image, try to share it too
-        if (act.image && navigator.canShare && navigator.canShare({ files: [] })) {
-            try {
-                // Convert Base64 to Blob
-                const fetchRes = await fetch(act.image);
-                const blob = await fetchRes.blob();
-                const file = new File([blob], 'kebaikan.jpg', { type: 'image/jpeg' });
+        let fileToShare: File | null = null;
 
-                // Update share data with file
-                shareData.files = [file];
+        // Try to process image
+        if (act.image) {
+            try {
+                // Check if browser supports file sharing
+                if (navigator.canShare && navigator.canShare({ files: [new File([], 'test.txt')] })) {
+                    const blob = dataURItoBlob(act.image);
+                    if (blob) {
+                        const ext = blob.type.split('/')[1] || 'jpg';
+                        fileToShare = new File([blob], `kebaikan.${ext}`, { type: blob.type });
+                        shareData.files = [fileToShare];
+                    }
+                }
             } catch (e) {
                 console.error('Error preparing image for share:', e);
             }
+        }
+
+        // Only add URL if NO file is shared (Android often fails when mixing text+url+file)
+        if (!fileToShare) {
+            shareData.url = window.location.href;
         }
 
         try {
             if (navigator.share && navigator.canShare(shareData)) {
                 await navigator.share(shareData);
             } else {
-                // Fallback: copy text only
-                await navigator.clipboard.writeText(`${shareData.text}\n${shareData.url}`);
+                // Fallback: copy text + url
+                await navigator.clipboard.writeText(`${shareData.text}\n${window.location.href}`);
                 toast.success('Cerita tersalin! Siap dipaste kemana aja.');
             }
         } catch (error) {
             console.error('Error sharing:', error);
+            // If sharing failed with file, try fallback without file but with URL
+            if (fileToShare) {
+                try {
+                    const textOnlyData = {
+                        title: shareData.title,
+                        text: shareData.text,
+                        url: window.location.href
+                    };
+                    await navigator.share(textOnlyData);
+                } catch (retryError) {
+                    toast.error('Gagal share gambar. Coba screenshot aja ya! 🙏');
+                }
+            }
         }
     };
 
