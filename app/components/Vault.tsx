@@ -138,7 +138,8 @@ export default function Vault() {
                                 placeholder="Ceritain kebaikan yang udah kamu lakuin hari ini..."
                                 className="w-full bg-transparent border-none resize-none text-[var(--text-primary)] placeholder:text-[var(--text-tertiary)] focus:outline-none"
                                 rows={3}
-                            />{image && (
+                            />
+                            {image && (
                                 <div className="relative inline-block mb-2">
                                     <img src={image} alt="Preview" className="h-24 rounded-lg border border-gray-200" />
                                     <button
