@@ -7,6 +7,35 @@ export default function Vault() {
     const { completedActs, addAct } = useVaultStore();
     const { addPoints, addActivity } = useIdentityStore();
     const [status, setStatus] = useState('');
+    const [image, setImage] = useState<string | null>(null);
+
+    const handleImageUpload = (e: React.ChangeEvent<HTMLInputElement>) => {
+        const file = e.target.files?.[0];
+        if (file) {
+            const reader = new FileReader();
+            reader.onloadend = () => setImage(reader.result as string);
+            reader.readAsDataURL(file);
+        }
+    };
+
+    const handleShare = async (act: any) => {
+        const shareData = {
+            title: `Kebaikan: ${act.title}`,
+            text: `${act.title}\n\n"${act.story}"\n\n- ${act.user}`,
+            url: window.location.href
+        };
+
+        try {
+            if (navigator.share) {
+                await navigator.share(shareData);
+            } else {
+                await navigator.clipboard.writeText(`${shareData.text}\n${shareData.url}`);
+                alert('Cerita tersalin! Siap dipaste kemana aja.');
+            }
+        } catch (error) {
+            console.error('Error sharing:', error);
+        }
+    };
 
     const handlePost = () => {
         if (!status.trim()) return;
@@ -20,7 +49,8 @@ export default function Vault() {
             timestamp: 'Baru saja',
             likes: 0,
             comments: 0,
-            user: 'You'
+            user: 'You',
+            image: image || undefined
         });
 
         // 2. Add Reward
@@ -33,6 +63,7 @@ export default function Vault() {
 
         // 3. Reset
         setStatus('');
+        setImage(null);
         alert('Mantap! Kebaikanmu berhasil dibagikan (+50 Poin)');
     };
 
@@ -49,18 +80,42 @@ export default function Vault() {
                         <div className="w-10 h-10 rounded-full bg-[var(--primary-orange)] flex items-center justify-center text-white font-bold text-lg">
                             Y
                         </div>
-                        <textarea
-                            value={status}
-                            onChange={(e) => setStatus(e.target.value)}
-                            placeholder="Apa kebaikan yang kamu lakukan hari ini?"
-                            className="flex-1 bg-transparent border-none focus:ring-0 text-[var(--text-primary)] placeholder:text-[var(--text-tertiary)] resize-none h-20"
-                        />
+                        <div className="flex-1">
+                            <textarea
+                                value={status}
+                                onChange={(e) => setStatus(e.target.value)}
+                                placeholder="Apa kebaikan yang kamu lakukan hari ini?"
+                                className="w-full bg-transparent border-none focus:ring-0 text-[var(--text-primary)] placeholder:text-[var(--text-tertiary)] resize-none h-20 mb-2"
+                            />
+                            {image && (
+                                <div className="relative inline-block mb-2">
+                                    <img src={image} alt="Preview" className="h-24 rounded-lg border border-gray-200" />
+                                    <button
+                                        onClick={() => setImage(null)}
+                                        className="absolute -top-2 -right-2 w-6 h-6 bg-red-500 text-white rounded-full flex items-center justify-center text-xs font-bold shadow-md hover:bg-red-600 transition-colors"
+                                    >
+                                        X
+                                    </button>
+                                </div>
+                            )}
+                        </div>
                     </div>
                     <div className="flex items-center justify-between border-t border-gray-200/50 pt-3 mt-2">
                         <div className="flex gap-2">
-                            <button className="p-2 hover:bg-black/5 rounded-full transition-colors text-[var(--text-secondary)]">
-                                <ImageIcon className="w-5 h-5" />
+                            <button
+                                onClick={() => document.getElementById('vault-upload')?.click()}
+                                className="p-2 hover:bg-black/5 rounded-full transition-colors text-[var(--text-secondary)] tooltip"
+                                title="Upload Foto"
+                            >
+                                <ImageIcon className="w-5 h-5 text-[var(--primary-orange)]" />
                             </button>
+                            <input
+                                id="vault-upload"
+                                type="file"
+                                accept="image/*"
+                                className="hidden"
+                                onChange={handleImageUpload}
+                            />
                         </div>
                         <button
                             onClick={handlePost}
@@ -86,15 +141,15 @@ export default function Vault() {
                                 </div>
                             </div>
 
-                            <p className="text-[var(--text-secondary)] mb-4 text-sm leading-relaxed">
+                            <p className="text-[var(--text-secondary)] mb-4 text-sm leading-relaxed whitespace-pre-line">
                                 {act.story}
                             </p>
 
-                            {act.image && (
-                                <div className="mb-4 rounded-xl overflow-hidden h-48 w-full bg-gray-100 flex items-center justify-center text-gray-400">
-                                    [Foto Aksi Kebaikan]
+                            {act.image ? (
+                                <div className="mb-4 rounded-xl overflow-hidden max-h-96 w-full bg-gray-100">
+                                    <img src={act.image} alt="Bukti Kebaikan" className="w-full h-full object-cover" />
                                 </div>
-                            )}
+                            ) : null}
 
                             <div className="flex items-center gap-2 mb-4">
                                 <span className="px-3 py-1 rounded-full bg-[var(--bg-orange-50)] text-[var(--primary-orange)] text-xs font-bold">
@@ -113,7 +168,10 @@ export default function Vault() {
                                 </button>
                             </div>
 
-                            <button className="w-full py-3 rounded-xl bg-[var(--primary-orange)] text-white font-bold shadow-md hover:shadow-lg hover:bg-orange-600 transition-all duration-300 flex items-center justify-center gap-2">
+                            <button
+                                onClick={() => handleShare(act)}
+                                className="w-full py-3 rounded-xl bg-[var(--primary-orange)] text-white font-bold shadow-md hover:shadow-lg hover:bg-orange-600 transition-all duration-300 flex items-center justify-center gap-2"
+                            >
                                 <Share2 className="w-5 h-5" />
                                 Bagikan Kebaikan Ini
                             </button>

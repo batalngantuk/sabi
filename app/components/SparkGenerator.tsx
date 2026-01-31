@@ -17,10 +17,12 @@ export default function SparkGenerator() {
 
     const [selectedIdea, setSelectedIdea] = useState<Suggestion | null>(null);
     const [story, setStory] = useState('');
+    const [image, setImage] = useState<string | null>(null);
 
     const handleSelectIdea = (idea: Suggestion) => {
         setSelectedIdea(idea);
         setStory('');
+        setImage(null);
     };
 
     const handlePost = () => {
@@ -35,7 +37,8 @@ export default function SparkGenerator() {
             timestamp: 'Baru saja',
             likes: 0,
             comments: 0,
-            user: 'User' // Hardcoded for now
+            user: 'User', // Hardcoded for now
+            image: image || undefined
         });
 
         // 2. Add to Identity (Personal Stats)
@@ -288,14 +291,42 @@ export default function SparkGenerator() {
                         </p>
 
                         <div className="space-y-6">
-                            <div className="border-4 border-dashed border-[var(--border-orange)] rounded-2xl p-8 text-center hover:border-[var(--primary-orange)] transition-all duration-300 cursor-pointer bg-white/50">
-                                <Camera className="w-12 h-12 mx-auto mb-4 text-[var(--text-tertiary)]" />
-                                <p className="font-bold text-[var(--text-primary)]">
-                                    Upload Bukti Aksi
-                                </p>
-                                <p className="text-sm text-[var(--text-tertiary)]">
-                                    Biar makin valid no debad!
-                                </p>
+                            <div
+                                onClick={() => document.getElementById('proof-upload')?.click()}
+                                className="border-4 border-dashed border-[var(--border-orange)] rounded-2xl p-8 text-center hover:border-[var(--primary-orange)] transition-all duration-300 cursor-pointer bg-white/50 relative overflow-hidden group"
+                            >
+                                {image ? (
+                                    <div className="absolute inset-0">
+                                        <img src={image} alt="Bukti Aksi" className="w-full h-full object-cover" />
+                                        <div className="absolute inset-0 bg-black/40 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity">
+                                            <p className="text-white font-bold">Ganti Foto</p>
+                                        </div>
+                                    </div>
+                                ) : (
+                                    <>
+                                        <Camera className="w-12 h-12 mx-auto mb-4 text-[var(--text-tertiary)]" />
+                                        <p className="font-bold text-[var(--text-primary)]">
+                                            Upload Bukti Aksi
+                                        </p>
+                                        <p className="text-sm text-[var(--text-tertiary)]">
+                                            Biar makin valid no debad!
+                                        </p>
+                                    </>
+                                )}
+                                <input
+                                    id="proof-upload"
+                                    type="file"
+                                    accept="image/*"
+                                    className="hidden"
+                                    onChange={(e) => {
+                                        const file = e.target.files?.[0];
+                                        if (file) {
+                                            const reader = new FileReader();
+                                            reader.onloadend = () => setImage(reader.result as string);
+                                            reader.readAsDataURL(file);
+                                        }
+                                    }}
+                                />
                             </div>
 
                             <div>
