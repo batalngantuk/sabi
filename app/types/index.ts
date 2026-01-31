@@ -24,6 +24,8 @@ export interface Badge {
 
   name: string;
   unlocked: boolean;
+  progress?: number; // 0-100 percentage
+  requirement?: string; // e.g., "5 posts tentang hewan"
 }
 
 export interface Activity {

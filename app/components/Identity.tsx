@@ -9,6 +9,7 @@ import {
 } from 'lucide-react';
 import toast from 'react-hot-toast';
 import { usePullToRefresh } from '../hooks/usePullToRefresh';
+import DailyChallenges from './DailyChallenges';
 
 function Identity() {
     const { points, streak, lifetimeScore, badges, activities } = useIdentityStore();
@@ -143,27 +144,56 @@ function Identity() {
                 </div>
             </div>
 
+            {/* Daily Challenges */}
+            <DailyChallenges />
+
             {/* Badges */}
             <div className="glass-effect rounded-3xl p-8">
                 <h3 className="text-2xl font-bold mb-6 text-[var(--text-primary)] flex items-center gap-2">
                     <Award className="w-6 h-6 text-[var(--primary-orange)]" />
                     Koleksi Badges
                 </h3>
-                <div className="grid grid-cols-3 md:grid-cols-5 gap-4">
+                <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
                     {badges.map((badge, index) => (
                         <div
                             key={index}
                             className={`text-center p-4 rounded-2xl transition-all duration-300 ${badge.unlocked
-                                ? 'bg-gradient-to-br from-[var(--bg-orange-50)] to-[var(--bg-rose-50)] hover:scale-110 cursor-pointer'
-                                : 'bg-gray-200 opacity-40 blur-sm'
+                                ? 'bg-gradient-to-br from-[var(--bg-orange-50)] to-[var(--bg-rose-50)] hover:scale-105 cursor-pointer border-2 border-[var(--primary-orange)]'
+                                : 'bg-gray-100 border-2 border-gray-300'
                                 }`}
                         >
-                            <div className="mb-2 flex justify-center text-[var(--primary-orange)]">
+                            <div className={`mb-2 flex justify-center ${badge.unlocked ? 'text-[var(--primary-orange)]' : 'text-gray-400'}`}>
                                 {getBadgeIcon(badge.name)}
                             </div>
-                            <p className="text-xs font-bold text-[var(--text-primary)]">
+                            <p className={`text-xs font-bold mb-2 ${badge.unlocked ? 'text-[var(--text-primary)]' : 'text-gray-500'}`}>
                                 {badge.name}
                             </p>
+
+                            {/* Progress Bar for Locked Badges */}
+                            {!badge.unlocked && badge.progress !== undefined && (
+                                <div className="mt-2">
+                                    <div className="w-full bg-gray-200 rounded-full h-2 mb-1">
+                                        <div
+                                            className="bg-gradient-to-r from-[var(--primary-orange)] to-[var(--primary-amber)] h-2 rounded-full transition-all duration-300"
+                                            style={{ width: `${badge.progress}%` }}
+                                        />
+                                    </div>
+                                    <p className="text-[10px] text-gray-500 font-bold">
+                                        {badge.progress}%
+                                    </p>
+                                    {badge.requirement && (
+                                        <p className="text-[9px] text-gray-400 mt-1">
+                                            {badge.requirement}
+                                        </p>
+                                    )}
+                                </div>
+                            )}
+
+                            {badge.unlocked && (
+                                <div className="mt-1">
+                                    <span className="text-[10px] text-green-600 font-bold">✓ Unlocked</span>
+                                </div>
+                            )}
                         </div>
                     ))}
                 </div>

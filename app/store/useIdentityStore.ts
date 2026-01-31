@@ -21,13 +21,13 @@ export const useIdentityStore = create<IdentityState>()(
             lifetimeScore: 750, // Total accumulated score
             streak: 12,
             badges: [
-                { name: 'Pejuang Subuh', unlocked: true },
-                { name: 'Sobat Anabul', unlocked: true },
-                { name: 'Warga Teladan', unlocked: false },
-                { name: 'Pahlawan Lingkungan', unlocked: true },
-                { name: 'Malaikat Malam', unlocked: false },
-                { name: 'Tangan Diatas', unlocked: true },
-                { name: 'Influencer Kebaikan', unlocked: false },
+                { name: 'Pejuang Subuh', unlocked: true, progress: 100, requirement: '5 posts pagi hari' },
+                { name: 'Sobat Anabul', unlocked: true, progress: 100, requirement: '5 posts tentang hewan' },
+                { name: 'Warga Teladan', unlocked: false, progress: 60, requirement: '10 posts kebaikan' },
+                { name: 'Pahlawan Lingkungan', unlocked: true, progress: 100, requirement: '5 posts lingkungan' },
+                { name: 'Malaikat Malam', unlocked: false, progress: 40, requirement: '5 posts malam hari' },
+                { name: 'Tangan Diatas', unlocked: true, progress: 100, requirement: '3 donasi' },
+                { name: 'Influencer Kebaikan', unlocked: false, progress: 75, requirement: '20 shares' },
             ],
             activities: [
                 { action: 'Memberi roti ke petugas parkir', time: '2 jam lalu', points: '+50' },
