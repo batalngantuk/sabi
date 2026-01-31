@@ -1,30 +1,54 @@
 'use client';
 
 import { Badge, Activity } from '../types';
+import {
+    Flame, Star, Award, History,
+    Sun, PawPrint, Shield, Leaf, Moon,
+    Gift, Utensils, Trash2
+} from 'lucide-react';
 
 export default function Identity() {
     // Mock badges
     const badges: Badge[] = [
-        { emoji: '🌅', name: 'Morning Angel', unlocked: true },
-        { emoji: '🐾', name: 'Animal Savior', unlocked: true },
-        { emoji: '🦸', name: 'Street Hero', unlocked: false },
-        { emoji: '🌱', name: 'Green Warrior', unlocked: true },
-        { emoji: '🌙', name: 'Midnight Kindness', unlocked: false },
+        { name: 'Morning Angel', unlocked: true },
+        { name: 'Animal Savior', unlocked: true },
+        { name: 'Street Hero', unlocked: false },
+        { name: 'Green Warrior', unlocked: true },
+        { name: 'Midnight Kindness', unlocked: false },
     ];
 
     const activities: Activity[] = [
-        { emoji: '🍞', action: 'Memberi roti ke petugas parkir', time: '2 jam lalu', points: '+50' },
-        { emoji: '🐕', action: 'Memberi makan kucing jalanan', time: '1 hari lalu', points: '+30' },
-        { emoji: '🌱', action: 'Memungut sampah di taman', time: '2 hari lalu', points: '+20' },
+        { action: 'Memberi roti ke petugas parkir', time: '2 jam lalu', points: '+50' },
+        { action: 'Memberi makan kucing jalanan', time: '1 hari lalu', points: '+30' },
+        { action: 'Memungut sampah di taman', time: '2 hari lalu', points: '+20' },
     ];
+
+    const getBadgeIcon = (name: string) => {
+        switch (name) {
+            case 'Morning Angel': return <Sun className="w-8 h-8" />;
+            case 'Animal Savior': return <PawPrint className="w-8 h-8" />;
+            case 'Street Hero': return <Shield className="w-8 h-8" />;
+            case 'Green Warrior': return <Leaf className="w-8 h-8" />;
+            case 'Midnight Kindness': return <Moon className="w-8 h-8" />;
+            default: return <Award className="w-8 h-8" />;
+        }
+    };
+
+    const getActivityIcon = (action: string) => {
+        if (action.includes('roti') || action.includes('makan')) return <Utensils className="w-6 h-6" />;
+        if (action.includes('kucing') || action.includes('anjing')) return <PawPrint className="w-6 h-6" />;
+        if (action.includes('sampah')) return <Trash2 className="w-6 h-6" />;
+        return <Gift className="w-6 h-6" />;
+    };
 
     return (
         <section className="max-w-4xl mx-auto px-6 pb-20">
             <div className="grid md:grid-cols-2 gap-6 mb-6">
                 {/* Kindness Score */}
                 <div className="glass-effect rounded-3xl p-8 text-center">
-                    <h3 className="text-lg font-bold mb-4 text-[var(--text-primary)]">
-                        ⭐ Kindness Score
+                    <h3 className="text-lg font-bold mb-4 text-[var(--text-primary)] flex items-center justify-center gap-2">
+                        <Star className="w-5 h-5 text-[var(--primary-orange)]" />
+                        Kindness Score
                     </h3>
                     <div className="relative w-40 h-40 mx-auto mb-4">
                         <svg className="transform -rotate-90 w-40 h-40">
@@ -64,26 +88,28 @@ export default function Identity() {
 
                 {/* Streak Counter */}
                 <div className="glass-effect rounded-3xl p-8 text-center">
-                    <h3 className="text-lg font-bold mb-4 text-[var(--text-primary)]">
-                        🔥 Streak
+                    <h3 className="text-lg font-bold mb-4 text-[var(--text-primary)] flex items-center justify-center gap-2">
+                        <Flame className="w-5 h-5 text-[var(--primary-orange)]" />
+                        Streak
                     </h3>
-                    <div className="text-7xl mb-4 animate-[pulse-glow_2s_ease-in-out_infinite]">
-                        🔥
+                    <div className="mb-4 flex justify-center animate-[pulse-glow_2s_ease-in-out_infinite]">
+                        <Flame className="w-20 h-20 text-[var(--primary-orange)] fill-[var(--primary-orange)]" />
                     </div>
                     <p className="text-5xl font-bold text-gradient mb-2">12</p>
                     <p className="text-lg text-[var(--text-secondary)] font-bold">
                         Hari Non-stop!
                     </p>
                     <p className="text-sm text-[var(--text-tertiary)] mt-2">
-                        Keren abis! Pertahanin terus! 💪
+                        Keren abis! Pertahanin terus!
                     </p>
                 </div>
             </div>
 
             {/* Badges */}
             <div className="glass-effect rounded-3xl p-8">
-                <h3 className="text-2xl font-bold mb-6 text-[var(--text-primary)]">
-                    🏅 Koleksi Badges
+                <h3 className="text-2xl font-bold mb-6 text-[var(--text-primary)] flex items-center gap-2">
+                    <Award className="w-6 h-6 text-[var(--primary-orange)]" />
+                    Koleksi Badges
                 </h3>
                 <div className="grid grid-cols-5 gap-4">
                     {badges.map((badge, index) => (
@@ -94,7 +120,9 @@ export default function Identity() {
                                 : 'bg-gray-200 opacity-40 blur-sm'
                                 }`}
                         >
-                            <div className="text-4xl mb-2">{badge.emoji}</div>
+                            <div className="mb-2 flex justify-center text-[var(--primary-orange)]">
+                                {getBadgeIcon(badge.name)}
+                            </div>
                             <p className="text-xs font-bold text-[var(--text-primary)]">
                                 {badge.name}
                             </p>
@@ -103,15 +131,16 @@ export default function Identity() {
                 </div>
                 <div className="mt-6 text-center">
                     <p className="text-sm text-[var(--text-tertiary)]">
-                        Udah dapet 3 dari 5 badges kece! • Gas lengkapi semua! 🎁
+                        Udah dapet 3 dari 5 badges kece! • Gas lengkapi semua!
                     </p>
                 </div>
             </div>
 
             {/* Recent Activities */}
             <div className="glass-effect rounded-3xl p-8 mt-6">
-                <h3 className="text-2xl font-bold mb-6 text-[var(--text-primary)]">
-                    📊 Jejak Kebaikan
+                <h3 className="text-2xl font-bold mb-6 text-[var(--text-primary)] flex items-center gap-2">
+                    <History className="w-6 h-6 text-[var(--primary-orange)]" />
+                    Jejak Kebaikan
                 </h3>
                 <div className="space-y-4">
                     {activities.map((activity, index) => (
@@ -119,7 +148,9 @@ export default function Identity() {
                             key={index}
                             className="flex items-center gap-4 p-4 rounded-xl bg-white/50 hover:bg-white transition-all duration-300"
                         >
-                            <div className="text-3xl">{activity.emoji}</div>
+                            <div className="p-2 rounded-full bg-[var(--bg-orange-50)] text-[var(--primary-orange)]">
+                                {getActivityIcon(activity.action)}
+                            </div>
                             <div className="flex-1">
                                 <p className="font-bold text-[var(--text-primary)]">{activity.action}</p>
                                 <p className="text-sm text-[var(--text-tertiary)]">{activity.time}</p>

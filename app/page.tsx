@@ -4,6 +4,7 @@ import { useState } from 'react';
 import SparkGenerator from './components/SparkGenerator';
 import Vault from './components/Vault';
 import Identity from './components/Identity';
+import { Zap, Camera, User } from 'lucide-react';
 import { Section } from './types';
 
 export default function Home() {
@@ -15,13 +16,13 @@ export default function Home() {
       <section className="relative overflow-hidden pt-12 pb-6 px-6">
         <div className="max-w-6xl mx-auto text-center">
           <div className="inline-block mb-3 animate-[float_3s_ease-in-out_infinite]">
-            <span className="text-5xl md:text-7xl">🤝</span>
+            {/* <span className="text-5xl md:text-7xl">🤝</span> */}
           </div>
           <h1 className="text-4xl md:text-6xl font-bold mb-3 text-gradient lowercase">
             sabi.
           </h1>
           <p className="text-lg md:text-2xl mb-2 text-[var(--text-secondary)] max-w-2xl mx-auto">
-            Niat baik jangan cuma di hati, gas aksi! 🚀
+            Niat baik jangan cuma di hati, gas aksi!
           </p>
         </div>
 
@@ -47,7 +48,7 @@ export default function Home() {
               : 'text-[var(--text-tertiary)] hover:bg-white/50'
               }`}
           >
-            <span className="text-2xl">⚡</span>
+            <Zap className="w-6 h-6" />
             <span className="text-[10px] font-bold">Ide</span>
           </button>
 
@@ -58,7 +59,7 @@ export default function Home() {
               : 'text-[var(--text-tertiary)] hover:bg-white/50'
               }`}
           >
-            <span className="text-2xl">📸</span>
+            <Camera className="w-6 h-6" />
             <span className="text-[10px] font-bold">Jejak</span>
           </button>
 
@@ -69,7 +70,7 @@ export default function Home() {
               : 'text-[var(--text-tertiary)] hover:bg-white/50'
               }`}
           >
-            <span className="text-2xl">🏆</span>
+            <User className="w-6 h-6" />
             <span className="text-[10px] font-bold">Gue</span>
           </button>
         </div>

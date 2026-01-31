@@ -4,10 +4,13 @@ export interface SparkForm {
   budget: string;
   time: string;
   energy: string;
+  useLocation?: boolean;
+  latitude?: number | null;
+  longitude?: number | null;
 }
 
 export interface Suggestion {
-  emoji: string;
+
   title: string;
   description: string;
   budget: string;
@@ -18,13 +21,13 @@ export interface Suggestion {
 }
 
 export interface Badge {
-  emoji: string;
+
   name: string;
   unlocked: boolean;
 }
 
 export interface Activity {
-  emoji: string;
+
   action: string;
   time: string;
   points: string;

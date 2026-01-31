@@ -8,59 +8,87 @@ export default function SparkGenerator() {
 
     const handleGenerate = async () => {
         setIsLoading(true);
-        // TODO: Replace with real API call
-        setTimeout(() => {
-            setSuggestions([
-                {
-                    emoji: '🍞',
-                    title: 'Beli 2 roti di toko sebelahmu',
-                    description: 'Berikan ke petugas parkir yang sedang bekerja',
-                    budget: 'Rp 15.000',
-                    time: '10 menit',
-                    distance: '200m dari lokasi',
-                    difficulty: 'Mudah',
-                    category: 'Charity'
+        try {
+            const response = await fetch('/api/generate-ideas', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
                 },
-                {
-                    emoji: '🐕',
-                    title: 'Beli makanan kucing di minimarket',
-                    description: 'Berikan ke kucing jalanan di sekitar area kamu',
-                    budget: 'Rp 25.000',
-                    time: '15 menit',
-                    distance: '500m dari lokasi',
-                    difficulty: 'Mudah',
-                    category: 'Animal Care'
-                },
-                {
-                    emoji: '🌱',
-                    title: 'Ambil 5 sampah plastik di taman',
-                    description: 'Buang ke tempat sampah terdekat',
-                    budget: 'Rp 0',
-                    time: '5 menit',
-                    distance: '300m dari lokasi',
-                    difficulty: 'Sangat Mudah',
-                    category: 'Environment'
-                }
-            ]);
+                body: JSON.stringify(form),
+            });
+
+            if (!response.ok) {
+                throw new Error('Failed to generate');
+            }
+
+            const data = await response.json();
+            setSuggestions(data);
+        } catch (error) {
+            console.error(error);
+            alert("Maaf, lagi ga bisa racik ide nih. Coba lagi nanti ya!");
+        } finally {
             setIsLoading(false);
-        }, 1500);
+        }
     };
 
     return (
         <section className="max-w-4xl mx-auto px-6 pb-20">
             <div className="glass-effect rounded-3xl p-8 mb-8">
-                <h2 className="text-3xl font-bold mb-2 text-[var(--text-primary)]">
-                    🎯 Ide Kebaikan Instan
+                <h2 className="text-xl md:text-3xl font-bold mb-2 text-[var(--text-primary)]">
+                    Ide Kebaikan Instan
                 </h2>
                 <p className="text-[var(--text-secondary)] mb-6">
                     Lagi buntu ide? Santai, AI bakal pilihin yang pas buat sikon kamu.
                 </p>
 
                 <div className="space-y-6 mb-6">
+                    {/* Location Toggle - Big Button Style */}
+                    <button
+                        onClick={() => {
+                            if (!form.useLocation) {
+                                navigator.geolocation.getCurrentPosition(
+                                    (pos) => {
+                                        setForm({
+                                            ...form,
+                                            useLocation: true,
+                                            latitude: pos.coords.latitude,
+                                            longitude: pos.coords.longitude
+                                        });
+                                    },
+                                    (err) => {
+                                        alert("Gagal ambil lokasi: " + err.message);
+                                    }
+                                );
+                            } else {
+                                setForm({ ...form, useLocation: false, latitude: null, longitude: null });
+                            }
+                        }}
+                        className={`w-full flex items-center justify-between p-4 rounded-xl border-2 transition-all duration-300 ${form.useLocation
+                            ? 'bg-orange-50 border-[var(--primary-orange)] text-[var(--text-primary)] shadow-sm'
+                            : 'bg-white border-gray-200 text-[var(--text-secondary)] hover:border-[var(--border-orange)]'
+                            }`}
+                    >
+                        <div className="flex items-center gap-3">
+
+                            <div className="text-left">
+                                <p className="font-bold text-sm">
+                                    {form.useLocation ? 'Lokasi Kamu Aktif' : 'Pakai Lokasi Saya'}
+                                </p>
+                                <p className="text-xs opacity-80">
+                                    {form.useLocation ? 'Mencari ide di sekitarmu...' : 'Klik biar ide lebih akurat!'}
+                                </p>
+                            </div>
+                        </div>
+                        <div className={`w-6 h-6 rounded-full border-2 flex items-center justify-center transition-all ${form.useLocation ? 'bg-[var(--primary-orange)] border-[var(--primary-orange)]' : 'border-gray-300'
+                            }`}>
+                            {form.useLocation && <span className="text-white text-xs font-bold">✓</span>}
+                        </div>
+                    </button>
+
                     {/* Budget Selection */}
                     <div>
                         <label className="block text-sm font-bold mb-2 text-[var(--text-primary)]">
-                            💰 Ada modal berapa?
+                            Ada modal berapa?
                         </label>
                         <div className="flex gap-3 overflow-x-auto pb-2 scrollbar-hide -mx-2 px-2">
                             {[
@@ -88,7 +116,7 @@ export default function SparkGenerator() {
                     {/* Time Selection */}
                     <div>
                         <label className="block text-sm font-bold mb-2 text-[var(--text-primary)]">
-                            ⏱️ Punya waktu berapa lama?
+                            Punya waktu berapa lama?
                         </label>
                         <div className="flex gap-3 overflow-x-auto pb-2 scrollbar-hide -mx-2 px-2">
                             {[
@@ -115,13 +143,13 @@ export default function SparkGenerator() {
                     {/* Energy Selection */}
                     <div>
                         <label className="block text-sm font-bold mb-2 text-[var(--text-primary)]">
-                            ⚡ Lagi semangat ga?
+                            Lagi semangat ga?
                         </label>
                         <div className="flex gap-3 overflow-x-auto pb-2 scrollbar-hide -mx-2 px-2">
                             {[
-                                { label: 'Lelah 😴', value: 'low' },
-                                { label: 'Biasa Aja 😊', value: 'medium' },
-                                { label: 'Gaspol! 🔥', value: 'high' }
+                                { label: 'Lelah', value: 'low' },
+                                { label: 'Biasa Aja', value: 'medium' },
+                                { label: 'Gaspol!', value: 'high' }
                             ].map((opt) => (
                                 <button
                                     key={opt.value}
@@ -143,7 +171,7 @@ export default function SparkGenerator() {
                     disabled={isLoading}
                     className="w-full gradient-primary text-white py-4 rounded-2xl font-bold text-lg shadow-lg hover:shadow-xl transform hover:scale-[1.02] transition-all duration-300 disabled:opacity-70 disabled:cursor-not-allowed"
                 >
-                    {isLoading ? 'Bentar, meracik ide...' : 'Carikan Ide Seru! ✨'}
+                    {isLoading ? 'Bentar, meracik ide...' : 'Carikan Ide Seru!'}
                 </button>
             </div>
 
@@ -158,7 +186,7 @@ export default function SparkGenerator() {
                             transition={{ delay: index * 0.1 }}
                             className="glass-effect rounded-2xl p-6 hover:shadow-xl transform hover:scale-105 transition-all duration-300 cursor-pointer"
                         >
-                            <div className="text-5xl mb-4">{suggestion.emoji}</div>
+                            {/* <div className="text-5xl mb-4">{suggestion.emoji}</div> */}
                             <h3 className="font-bold text-lg mb-2 text-[var(--text-primary)]">
                                 {suggestion.title}
                             </h3>
@@ -166,15 +194,15 @@ export default function SparkGenerator() {
                                 {suggestion.description}
                             </p>
                             <div className="space-y-2 text-xs text-[var(--text-tertiary)]">
-                                <p>💰 Modal: {suggestion.budget}</p>
-                                <p>⏱️ Durasi: {suggestion.time}</p>
-                                <p>📍 Lokasi: {suggestion.distance}</p>
+                                <p>Modal: {suggestion.budget}</p>
+                                <p>Durasi: {suggestion.time}</p>
+                                <p>Lokasi: {suggestion.distance}</p>
                                 <p className="inline-block px-3 py-1 rounded-full bg-[var(--bg-orange-50)] text-[var(--primary-orange)] font-bold">
                                     Level: {suggestion.difficulty}
                                 </p>
                             </div>
                             <button className="w-full mt-4 gradient-primary text-white py-3 rounded-xl font-bold hover:shadow-lg transition-all duration-300">
-                                Gas Jalanin! 🚀
+                                Gas Jalanin!
                             </button>
                         </motion.div>
                     ))}
