@@ -116,12 +116,6 @@ export default function SparkGenerator() {
                             </p>
 
                             <div className="space-y-6 mb-6">
-                                const [isLocating, setIsLocating] = useState(false);
-
-                                // ... existing code ...
-
-                                return (
-                                // ... existing jsx ...
                                 {/* Location Toggle - Big Button Style */}
                                 <button
                                     onClick={() => {
