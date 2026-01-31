@@ -1,4 +1,4 @@
-const CACHE_NAME = 'sabi-v1';
+const CACHE_NAME = 'sabi-v2';
 const urlsToCache = [
     '/',
     '/manifest.json',
