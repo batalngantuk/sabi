@@ -23,6 +23,7 @@ export default function SparkGenerator() {
     const [selectedIdea, setSelectedIdea] = useState<Suggestion | null>(null);
     const [story, setStory] = useState('');
     const [image, setImage] = useState<string | null>(null);
+    const [isLocating, setIsLocating] = useState(false);
 
     const handleSelectIdea = (idea: Suggestion) => {
         setSelectedIdea(idea);
